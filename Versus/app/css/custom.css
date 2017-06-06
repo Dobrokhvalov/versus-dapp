@@ -1,0 +1,148 @@
+.doppler-hover {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    display: none;
+    background: white;
+    font-size: 22px;;
+    color: green;
+    text-align: center;
+    text-color: #000;
+    border-radius: 50%;
+    border: 3px solid #bbb;
+    padding: 5px;
+}
+
+.active img {
+    filter: grayscale(100%) sepia(100%) hue-rotate(90deg);
+    }
+.unselected img {
+    filter: grayscale(100%);
+    }
+
+
+.active .doppler-hover {
+    display: block;
+}
+
+.col-no-padding {
+    padding: 2px;
+}
+
+.navbar-app {
+    background: #01967e;
+}
+
+.navbar-app .btn {
+    color: #ffffff;
+    padding-top: 10px;
+}
+
+.navbar-app .btn:hover{
+    color: #ffffff;
+}
+
+.navbar span {
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.dappler-img {
+    width: 100%;
+    min-height: 240px;
+    max-height: 485px;
+}
+
+.pull-right {
+    padding: 12px;
+    padding-right: 14px;
+}
+
+.numberCircle {
+    border-radius: 50%;
+
+    width: 36px;
+    height: 36px;
+
+    border: 3px solid #ffffff;
+    color: #fff;
+    text-align: center;
+
+    font: 26px Arial, sans-serif;
+}
+
+.btn-primary {
+    background-color: #f37046;
+    border-color: #f37046;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:hover {
+    background-color: #f37046;
+    border-color: #f37046;
+}
+
+.section {
+    padding: 20px 15px;
+}
+
+.background-photo {
+    height: 250px;
+    width: 100%;
+    position: absolute;
+    background-size: cover;
+    filter:blur(3px);
+}
+
+.background-blur {
+    height: 250px;
+    width: 100%;
+    position: absolute;
+    background-size: cover;
+    background: #01967e;
+    opacity: .7;
+}
+
+.app-name {
+    height: 250px;
+    width: 100%;
+    position: absolute;
+    padding: 0px;
+}
+
+.image-cropper {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 3px solid beige;
+}
+
+.profile-photo {
+    margin-top: 15px;
+    height: 100%;
+    width: auto;
+    margin-left: 10px;
+    position: absolute;
+}
+
+.img-circle {
+    border-radius: 0;
+}
+
+.background-color {
+    background: white;
+}
+
+.list-group-item, a.list-group-item {
+    border-bottom: 0px;
+}
+
+
+.list-group-item.active, .list-group-item:focus, .list-group-item:hover {
+    z-index: 2;
+    color: #f37046 !important;
+    background-color: #fff !important;
+    border-color: #fff;
+    text-decoration: none;
+}
