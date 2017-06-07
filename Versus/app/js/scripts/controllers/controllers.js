@@ -4,6 +4,8 @@ angular.module('VersusApp')
 	
 	ctrl.lists = [];
 	ctrl.canConfirm = false;
+
+	ctrl.modal2 = true;
 	
 	VersusService.getVersuses().then(function(lists) {
 	    ctrl.lists = lists;
@@ -43,6 +45,15 @@ angular.module('VersusApp')
 	$scope.$on('profileCountChange', function() {
     	    ctrl.ratedCount = ProfileService.ratedCount;
 	});
+	
+    }]).controller('NewVersusCtrl', ['$scope', function ($scope) {
+    	var ctrl = this;
+	$scope.modal2 = true;
+	ctrl.modal2 = true;
+	
+	ctrl.sumbit = function() {
+	    alert("submitting!");
+	};
 	
     }]);
 
