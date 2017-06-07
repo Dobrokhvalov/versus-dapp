@@ -1,15 +1,42 @@
+var VersusContract;
 angular.module('VersusApp')   
-    .controller('ListCtrl', ['VersusService', 'ProfileService', function(VersusService, ProfileService) {
+    .controller('ListCtrl', ['VersusService', 'ProfileService', '$rootScope', '$timeout', function(VersusService, ProfileService, $rootScope, $timeout) {
 	var ctrl = this;
 	
 	ctrl.lists = [];
 	ctrl.canConfirm = false;
 
 	ctrl.feedMode = true;
-	
-	VersusService.getVersuses().then(function(lists) {
-	    ctrl.lists = lists;
+
+	ctrl.feed = [];
+
+	$rootScope.$on('web3', function() {
+	    console.log('web3loaded ctrl');
+	    VersusContract.getVersuses().then(function(result) {
+	    	console.log(result);
+	    	ctrl.feed = result;
+	    });
 	});
+
+
+	var checkWeb3Loaded = function() {
+	    console.log("checking  web3");
+	    if (VersusContract !== undefined) {
+		console.log("web3 laoded");
+		$rootScope.$broadcast('web3');
+		console.log("event transmitted");
+		return null;
+	    };
+	    $timeout(function() {
+		checkWeb3Loaded();
+	    }, 1000);
+	};
+	checkWeb3Loaded();			       
+
+	
+	// VersusService.getVersuses().then(function(lists) {
+	//     ctrl.lists = lists;
+	// });
 
 	
 	ctrl.tap = function(list, side) {
@@ -39,83 +66,38 @@ angular.module('VersusApp')
 		// }
 	    }
 	};
-    }]).controller('ProfileCtrl', ['ProfileService', '$scope', function (ProfileService, $scope) {
+    }]).controller('ProfileCtrl', ['ProfileService', '$scope', '$rootScope', '$timeout',  function (ProfileService, $scope, $rootScope, $timeout) {
     	var ctrl = this;
     	ctrl.ratedCount = ProfileService.ratedCount;
 	$scope.$on('profileCountChange', function() {
     	    ctrl.ratedCount = ProfileService.ratedCount;
+	    
+	});
+
+	
+	
+    }]).controller('NewVersusCtrl', function () {
+    	var ctrl = this;
+
+	web3.eth.getAccounts(function(err, result) {
+	    ctrl.submitter = result[0];
 	});
 	
-    }]).controller('NewVersusCtrl', ['$scope', function ($scope) {
-    	var ctrl = this;
-	$scope.modal2 = true;
-	ctrl.modal2 = true;
-	
-	ctrl.sumbit = function() {
-	    alert("submitting!");
+	ctrl.submit = function() {
+	    console.log("submittin");
+	    
+	    VersusContract.addVersus(
+		ctrl.imageSrcA,
+		ctrl.imageSrcB,
+		ctrl.title,
+		ctrl.submitter		  
+	    )
+		.then(function(data) {
+		    console.log(data);
+		    alert("updated");
+		});
 	};
 	
-    }]);
+    });
 
 	
-	// ctrl.confirm = function() {
-	//     if (ctrl.canConfirm) {
-	// 	ProfileService.currentProfile.egoCount += 1;
-		
-	// 	init();
-	//     }
-	// };
-	
-	// ctrl.checkIfCanConfirm = function() {
-	//     var selectedCount = _.filter(ctrl.dapplers, function(d) {return d.selected;}).length;
-	//     console.log(selectedCount);
-	//     ctrl.canConfirm = (selectedCount === 2);
-	// };
-	
-	// var init = function() {	
-	//     ctrl.dapplers = [];
-	
-	//     ctrl.canConfirm = false;
-	//     DopplrContracts
-	// 	.fetchNextDapplers()
-	// 	.then(function(data) {
-	// 	    ctrl.dapplers = data.dapplers;
-	// 	});
-	//     };
-	
-	// init();
-	
-	
-	
-    // }]);
-    // .controller('MatchesCtrl', ['DopplrContracts', function (DopplrContracts) {
-    // 	var ctrl = this;
-	
-    // 	ctrl.matches = [];
-    // 	ctrl.rankedCount = 0;
-	
-    // 	ctrl.chat = function(match) {
-    // 	    alert("Chat Not implemented!");
-    // 	};
-
-    // 	ctrl.unlock = function(match) {
-    // 	    alert("Unlock Not implemented!");
-    // 	};
-
-
-    // 	var init = function() {	
-    // 	    DopplrContracts
-    // 		.fetchMatches()
-    // 		.then(function(data) {
-    // 		    ctrl.matches = data.matches;
-    // 		    ctrl.rankedCount = data.rankedCount;
-    // 		});
-    // 	    };
-	
-
-    // 	init();
-
-
-
-    // }])
-

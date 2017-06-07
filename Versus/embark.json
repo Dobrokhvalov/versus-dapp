@@ -2,7 +2,7 @@
   "contracts": ["app/contracts/**"],
   "app": {
       "css/app.css": ["app/css/lib/**", "app/css/custom.css"],
-      "js/app.js": [  "app/js/lib/angular.min.js", "app/js/lib/*", "app/js/scripts/app.js", "app/js/scripts/controllers/*","app/js/scripts/services/*" ],
+      "js/app.js": [ "embark.js", "app/js/lib/angular.min.js", "app/js/lib/*", "app/js/scripts/app.js", "app/js/scripts/controllers/*","app/js/scripts/services/*" ],
       "index.html": "app/index.html",
       "js/views/pages/list.html": "app/js/views/pages/list.html",
       "js/views/pages/new-versus.html": "app/js/views/pages/new-versus.html",
