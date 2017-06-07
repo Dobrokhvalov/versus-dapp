@@ -5,7 +5,7 @@ angular.module('VersusApp')
 	ctrl.lists = [];
 	ctrl.canConfirm = false;
 
-	ctrl.modal2 = true;
+	ctrl.feedMode = true;
 	
 	VersusService.getVersuses().then(function(lists) {
 	    ctrl.lists = lists;

@@ -22,16 +22,17 @@ versusApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
     
     // Now set up the states
     $stateProvider
-	.state('list', {
+        .state('list', {
 	    url: "/",	    
 	    controller: "ListCtrl as ctrl",
 	    templateUrl: "js/views/pages/list.html"
-	});
-	// .state('matches', {
-	//     url: "/matches",	    
-	//     controller: "MatchesCtrl as ctrl",
-	//     templateUrl: "js/views/pages/matches.html"
-	// });    
+	})
+    
+	.state('newversus', {
+	    url: "/new",	    
+	    controller: "NewVersusCtrl as ctrl",
+	    templateUrl: "js/views/pages/new-versus.html"
+	});    
 }]);
 
 
