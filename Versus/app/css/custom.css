@@ -1,10 +1,10 @@
-.doppler-hover {
+.versus-hover {
     position: absolute;
     bottom: 20px;
     left: 20px;
     display: none;
     background: white;
-    font-size: 22px;;
+    font-size: 22px;
     color: green;
     text-align: center;
     text-color: #000;
@@ -21,7 +21,7 @@
     }
 
 
-.active .doppler-hover {
+.active .versus-hover {
     display: block;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .navbar-app {
-    background: #01967e;
+    background: #7F9FB8;
 }
 
 .navbar-app .btn {
@@ -47,7 +47,7 @@
     text-transform: uppercase;
 }
 
-.dappler-img {
+.versus-img {
     width: 100%;
     min-height: 240px;
     max-height: 485px;
@@ -145,4 +145,8 @@
     background-color: #fff !important;
     border-color: #fff;
     text-decoration: none;
+}
+
+title-text {
+    font-size: 22px;
 }

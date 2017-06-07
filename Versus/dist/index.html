@@ -22,23 +22,23 @@
 	
 	<!-- - Sidebars -->
 	<div class="sidebar sidebar-left">
-	    <!-- <div class="scrollable">
-		 <div class="scrollable-header app-name"><div class="background"><div class="background-photo" ng-style="::{'background-image':'url('+profileCtrl.profile.profileImg+')'}"><div class="background-blur"></div></div></div>
-		 <div class="profile-photo"><div class="image-cropper"><img class="img-circle" ng-src="{{profileCtrl.profile.profileImg}}"></img></div></div></div>
-		 <div class="scrollable-content background-color">
-		 <div class="list-group" ui-turn-off='uiSidebarLeft'>
-		 <a class="list-group-item" ui-sref="list"> Dåppelfinder
-		 </a>
-		 <a class="list-group-item" ui-sref="matches"> My Dåpplrs
-		 </a>
-		 <a class="list-group-item" ui-sref="profile"> Profile
-		 </a>
-		 <a class="list-group-item" ui-sref="settings"> Settings
-		 
-		 </a>
-		 </div>
-		 </div>
-		 </div> -->
+	    <div class="scrollable">
+		<div class="scrollable-header app-name"><div class="background"><div class="background-photo" ng-style="::{'background-image':'url('+profileCtrl.profile.profileImg+')'}"><div class="background-blur"></div></div></div>
+		    <div class="profile-photo"><div class="image-cropper"><img class="img-circle" ng-src="{{profileCtrl.profile.profileImg}}"></img></div></div></div>
+		<div class="scrollable-content background-color">
+		    <div class="list-group" ui-turn-off='uiSidebarLeft'>
+			<a class="list-group-item" ui-sref="list"> Versus feed
+			</a>
+			<a class="list-group-item" ui-sref="matches"> My sponsorships
+			</a>
+			<a class="list-group-item" ui-sref="profile"> Add new versus
+			</a>
+			<a class="list-group-item" ui-sref="settings"> About
+			    
+			</a>
+		    </div>
+		</div>
+	    </div>
 	</div>
 
 	
@@ -47,7 +47,7 @@
 		<div ui-toggle="uiSidebarLeft" class="btn sidebar-toggle">
 		    <i class="fa fa-bars fa-2x"></i> 
 		</div>
-		<span>Dåppelfinder</span>
+		<span title-text>Versus</span>
 		<span class="pull-right"><div class="numberCircle">{{profileCtrl.ratedCount}}</div></span>
 	    </div>
 	    
