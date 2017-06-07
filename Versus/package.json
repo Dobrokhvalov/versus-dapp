@@ -11,5 +11,8 @@
   "devDependencies": {
     "embark": "^2.4.2",
     "mocha": "^2.2.5"
+  },
+  "dependencies": {
+    "ng-file-upload": "^12.2.13"
   }
 }
