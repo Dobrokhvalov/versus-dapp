@@ -3,19 +3,19 @@
 <div ng-show="ctrl.feedMode">
     <div class="panel panel-default ng-scope" ng-repeat="list in ctrl.lists">
 	<div class="panel-heading">
-	    <div class="btn-group pull-right">
-		<a ui-turn-on="myDropdown_{{list.pairId}}" class="btn">
-		    <i class="fa fa-ellipsis-v"></i>
-		</a>
-		<ul ui-shared-state="myDropdown_{{list.pairId}}" class="dropdown-menu ng-hide" ui-outer-click="Ui.turnOff('myDropdown_' + list.pairId)" ui-outer-click-if="Ui.active('myDropdown_' + list.pairId)" role="menu" ui-show="myDropdown_{{list.pairId}}" ui-turn-off="myDropdown_{{list.pairId}}">
+	    <!-- <div class="btn-group pull-right"> -->
+	    <!-- 	<a ui-turn-on="myDropdown_{{list.pairId}}" class="btn"> -->
+	    <!-- 	    <i class="fa fa-ellipsis-v"></i> -->
+	    <!-- 	</a> -->
+	    <!-- 	<ul ui-shared-state="myDropdown_{{list.pairId}}" class="dropdown-menu ng-hide" ui-outer-click="Ui.turnOff('myDropdown_' + list.pairId)" ui-outer-click-if="Ui.active('myDropdown_' + list.pairId)" role="menu" ui-show="myDropdown_{{list.pairId}}" ui-turn-off="myDropdown_{{list.pairId}}"> -->
 		    
-		    <li><a>Action</a></li>
-		    <li><a>Another action</a></li>
-		    <li><a>Something else here</a></li>
-		    <li class="divider"></li>
-		    <li><a>Separated link</a></li>
-		</ul>
-	    </div>
+	    <!-- 	    <li><a>Action</a></li> -->
+	    <!-- 	    <li><a>Another action</a></li> -->
+	    <!-- 	    <li><a>Something else here</a></li> -->
+	    <!-- 	    <li class="divider"></li> -->
+	    <!-- 	    <li><a>Separated link</a></li> -->
+	    <!-- 	</ul> -->
+	    <!-- </div> -->
 	    <h3 class="panel-title">{{ list.title}}</h3>
 	</div>
 
