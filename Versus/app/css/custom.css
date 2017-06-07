@@ -14,12 +14,20 @@
 }
 
 .active img {
-    filter: grayscale(100%) sepia(100%) hue-rotate(90deg);
+    position: absolute;
     }
+
 .unselected img {
     filter: grayscale(100%);
     }
 
+.unselected {
+    display: inline-grid;
+}
+
+.ng-scope {
+    padding-bottom: 0px !important;
+}
 
 .active .versus-hover {
     display: block;
@@ -30,7 +38,7 @@
 }
 
 .navbar-app {
-    background: #7F9FB8;
+    background: #34495e;
 }
 
 .navbar-app .btn {
@@ -49,8 +57,7 @@
 
 .versus-img {
     width: 100%;
-    min-height: 240px;
-    max-height: 485px;
+    height: 150px;
 }
 
 .pull-right {
@@ -102,6 +109,23 @@
     opacity: .7;
 }
 
+.selected-image {
+    position: absolute;
+}
+
+.selected-filter {
+    width: 100%;
+    height: 150px;
+    position: absolute;
+    background:  #2ecc71;
+    opacity: .7;
+    display: none;
+}
+
+.active .selected-filter {
+    display: block;
+}
+
 .app-name {
     height: 250px;
     width: 100%;
@@ -148,7 +172,27 @@
 }
 
 
-.title-text {
-    font-size: 22px;
+.title-text, .title-text:hover, .title-text:active, .title-text:focus {
+    font-size: 25px;
+    color: white;
+    text-transform: uppercase;
+    position: absolute;
+    padding-top: 17px;
+    display: inline-block;
+}
 
+.fa-plus-circle {
+    color: white
+}
+
+.fa-bars {
+    padding-top: 10px;
+}
+
+.image-rating {
+    position: absolute;
+    font-size: 40px;
+    color: red;
+    margin-top: 50px;
+    margin-left: 55px;
 }
