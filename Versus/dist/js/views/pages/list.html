@@ -1,44 +1,37 @@
 
 
 <div ng-show="ctrl.feedMode">
-    <div class="panel panel-default ng-scope" ng-repeat="list in ctrl.lists">
-	<div class="panel-heading">
-	    <!-- <div class="btn-group pull-right"> -->
-	    <!-- 	<a ui-turn-on="myDropdown_{{list.pairId}}" class="btn"> -->
-	    <!-- 	    <i class="fa fa-ellipsis-v"></i> -->
-	    <!-- 	</a> -->
-	    <!-- 	<ul ui-shared-state="myDropdown_{{list.pairId}}" class="dropdown-menu ng-hide" ui-outer-click="Ui.turnOff('myDropdown_' + list.pairId)" ui-outer-click-if="Ui.active('myDropdown_' + list.pairId)" role="menu" ui-show="myDropdown_{{list.pairId}}" ui-turn-off="myDropdown_{{list.pairId}}"> -->
-		    
-	    <!-- 	    <li><a>Action</a></li> -->
-	    <!-- 	    <li><a>Another action</a></li> -->
-	    <!-- 	    <li><a>Something else here</a></li> -->
-	    <!-- 	    <li class="divider"></li> -->
-	    <!-- 	    <li><a>Separated link</a></li> -->
-	    <!-- 	</ul> -->
-	    <!-- </div> -->
-	    <h3 class="panel-title">{{ list.title}}</h3>
-	</div>
-
-	
-	
-	<div class="panel-body ng-binding">
-	    <div class="col-xs-6 col-no-padding" ng-class="{'active':list.A.selected, 'unselected': list.A.unselected}">
-	      <div class="image-cont"><img class="versus-img" ng-click="ctrl.tap(list, 'A')" ng-src="{{list.A.img}}"></img></div><div class="selected-filter"></div>
-		<div class="image-rating" ng-show="list.selected"> {{list.A.rating}} </div>
-	    </div>
-	    <div class="col-xs-6  col-no-padding" ng-class="{'active':list.B.selected, 'unselected': list.B.unselected}">
-	      <div class="image-cont"><img ng-src="{{list.B.img}}" ng-click="ctrl.tap(list, 'B')" class="versus-img"></img></div><div class="selected-filter"></div>
-		<div class="image-rating" ng-show="list.selected"> {{list.B.rating}} </div>
-	    </div>
-	    <!-- <button class="btn btn-primary btn-block" ng-show="list.selected"> DETAILS </button> -->
-	    
-	</div>
-	<a class="btn btn-block btn-lg btn-primary scrollable-footer" ng-if="ctrl.canConfirm && ctrl.feedMode" ng-click="ctrl.feedMode=false;">  Claim Payout ~ {{profileCtrl.ratedCount}} Eth </a>
+  <div class="panel panel-default ng-scope" ng-repeat="list in ctrl.lists">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ list.title}}</h3>
     </div>
+    
+    
+    
+    <div class="panel-body ng-binding">
+      
+      <div class="col-xs-6 col-no-padding" ng-class="{'active':list.A.selected, 'unselected': list.A.unselected}">
+	<img class="versus-img" ng-click="ctrl.tap(list, 'A')" ng-src="{{list.A.img}}"></img><div class="selected-filter"><i class="fa fa-check-circle" aria-hidden="true"></i>
+</div>
+	<!-- <div class="image-rating" ng-show="list.selected"> {{list.A.rating}} </div> -->
+      </div>
+      <div class="col-xs-6  col-no-padding" ng-class="{'active':list.B.selected, 'unselected': list.B.unselected}">
+	<img ng-src="{{list.B.img}}" ng-click="ctrl.tap(list, 'B')" class="versus-img"></img><div class="selected-filter"><i class="fa fa-check-circle" aria-hidden="true"></i>
+</div>
+	<!-- <div class="image-rating" ng-show="list.selected"> {{list.B.rating}} </div>  -->
+	
+	<!-- <button class="btn btn-primary btn-block" ng-show="list.selected"> DETAILS </button> -->
+	   
+      </div>
+	    
+    </div>
+    <a class="btn btn-block btn-lg btn-primary scrollable-footer claim-btn" ng-if="ctrl.canConfirm && ctrl.feedMode" ng-click="ctrl.feedMode=false;">  Claim Payout ~ {{profileCtrl.ratedCount}} Eth </a>
+	    
+  </div>
 </div>
 
-<div ng-hide="ctrl.feedMode">
-    <div  ng-include="'js/views/pages/claim-payout-overlay.html'"> </div>
+<div  ng-hide="ctrl.feedMode">
+  <div  ng-include="'js/views/pages/claim-payout-overlay.html'"> </div>
 </div>
 
 
