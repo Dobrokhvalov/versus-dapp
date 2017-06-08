@@ -78469,7 +78469,7 @@ var whenEnvIsLoaded = function(cb) {
   }
 }
 whenEnvIsLoaded(function() {
-VersusContract = new EmbarkJS.Contract({abi: [{"constant":true,"inputs":[{"name":"pairid","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"},{"name":"title","type":"bytes32"},{"name":"submitter","type":"address"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}], address: '0xf3d769a143306aed8b53b3fc88725007519c818c', code: '606060405234610000575b60006001555b5b61047a806100206000396000f300606060405263ffffffff60e060020a60003504166356ec431481146100505780636dfd7d95146100bb578063b7f433d114610145578063dace9c9014610167578063e132d941146101cf575b610000565b34610000576100606004356101ee565b60408051602080825283518183015283519192839290830191858101910280838382156100a8575b8051825260208311156100a857601f199092019160209182019101610088565b5050509050019250505060405180910390f35b346100005761006060043560243560443573ffffffffffffffffffffffffffffffffffffffff60643516610250565b60408051602080825283518183015283519192839290830191858101910280838382156100a8575b8051825260208311156100a857601f199092019160209182019101610088565b5050509050019250505060405180910390f35b34610000576101556004356103c7565b60408051918252519081900360200190f35b34610000576100606103e8565b60408051602080825283518183015283519192839290830191858101910280838382156100a8575b8051825260208311156100a857601f199092019160209182019101610088565b5050509050019250505060405180910390f35b3461000057610155610448565b60408051918252519081900360200190f35b604080516020818101835260008083528054845181840281018401909552808552929392909183018282801561024357602002820191906000526020600020905b81548152602001906001019080831161022f575b505050505090505b919050565b60408051602080820183526000808352835160e081018552600180548083528285018b81528388018b8152606085018681526080860187815260a087018d815273ffffffffffffffffffffffffffffffffffffffff8d811660c08a01908152968a5260029a8b90529b89209751885593518787015591519786019790975595516003850155945160048401559351600583015592516006909101805473ffffffffffffffffffffffffffffffffffffffff191691909516179093558254908101808455919291828183801582901161034d5760008381526020902061034d9181019083015b808211156103495760008155600101610335565b5090565b5b505050916000526020600020900160005b50600180549182905590810190555060008054604080516020808402820181019092528281529291908301828280156103b757602002820191906000526020600020905b8154815260200190600101908083116103a3575b505050505090505b949350505050565b600081815481101561000057906000526020600020900160005b5054905081565b604080516020818101835260008083528054845181840281018401909552808552929392909183018282801561043d57602002820191906000526020600020905b815481526020019060010190808311610429575b505050505090505b90565b600154815600a165627a7a72305820fdcec7d9a4378528e18635c5fda810f0104f0770834e3ef7b556d3209e899ed20029', gasEstimates: {"creation":[5269,229200],"external":{"addVersus(bytes32,bytes32,bytes32,address)":null,"feedIds(uint256)":420,"getVersus(uint256)":null,"getVersuses()":null,"pairCounter()":312},"internal":{}}});
+VersusContract = new EmbarkJS.Contract({abi: [{"constant":true,"inputs":[{"name":"pairId","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"title","type":"bytes32"},{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"versusIds","type":"uint256[]"},{"name":"chosenA","type":"bool[]"}],"name":"submitPolls","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}], address: '0x2b2ae4e8707307daca28f2a21243e62170aee5b7', code: '606060405234610000575b60006001555b5b61051e806100206000396000f3006060604052361561005c5763ffffffff60e060020a60003504166356ec431481146100615780635eaff985146100b25780638d33916314610123578063b7f433d1146101ad578063dace9c90146101cf578063e132d941146101f5575b610000565b3461000057610071600435610214565b604080519788526020880196909652868601949094526060860192909252608085015260a0840152600160a060020a031660c0830152519081900360e00190f35b34610000576100c8600435602435604435610263565b6040805160208082528351818301528351919283929083019185810191028083838215610110575b80518252602083111561011057601f1990920191602091820191016100f0565b5050509050019250505060405180910390f35b34610000576101ab600480803590602001908201803590602001908080602002602001604051908101604052809392919081815260200183836020028082843750506040805187358901803560208181028481018201909552818452989a9989019892975090820195509350839250850190849080828437509496506103ef95505050505050565b005b34610000576101bd6004356104aa565b60408051918252519081900360200190f35b34610000576101dc6104cb565b6040805192835260208301919091528051918290030190f35b34610000576101bd6104ec565b60408051918252519081900360200190f35b60008181526002602081905260409091208054600182015492820154600383015460048401546005850154600690950154939594929391929091600160a060020a03165b919395979092949650565b60408051602080820183526000808352835161012081018552600180548083528285018a81528388018a8152606085018a81526080860187815260a0870188815233600160a060020a0390811660c08a01908152606460e08b019081526101008b018c8152988c5260029c8d90529d8b2099518a5595518989015593519988019990995590516003870155516004860155955160058501555160068401805473ffffffffffffffffffffffffffffffffffffffff191691909616179094559451600782015591516008909201919091558054928301808255919290918281838015829011610376576000838152602090206103769181019083015b80821115610372576000815560010161035e565b5090565b5b505050916000526020600020900160005b50600180549182905590810190555060008054604080516020808402820181019092528281529291908301828280156103e057602002820191906000526020600020905b8154815260200190600101908083116103cc575b505050505090505b9392505050565b600060008360018551038151811015610000576020908102909101810151600160a060020a03331660009081526003909252604082206001909101905591505b83518210156104a35760026000858481518110156100005790602001906020020151815260200190815260200160002090508282815181101561000057906020019060200201511561048b576004810180546001019055610497565b60058101805460010190555b5b60019091019061042f565b5b50505050565b600081815481101561000057906000526020600020900160005b5054905081565b600160a060020a0333166000908152600360205260409020546001545b9091565b600154815600a165627a7a723058200de669fd09d19fe619a2f124e8c309079e085ec1a17efe3fc40ae38bc744f4b00029', gasEstimates: {"creation":[5300,262000],"external":{"addVersus(bytes32,bytes32,bytes32)":null,"feedIds(uint256)":460,"getVersus(uint256)":921,"getVersuses()":514,"pairCounter()":352,"submitPolls(uint256[],bool[])":null},"internal":{}}});
 });
 
 EmbarkJS.Storage.setProvider('ipfs', {server: 'localhost', port: '5001'});
@@ -78879,7 +78879,7 @@ versusApp.run(function($rootScope){
 
 var VersusContract;
 angular.module('VersusApp')   
-    .controller('ListCtrl', ['VersusService', 'ProfileService', '$rootScope', '$timeout', function(VersusService, ProfileService, $rootScope, $timeout) {
+    .controller('ListCtrl', ['VersusService', 'ProfileService', '$rootScope', '$timeout', '$scope', function(VersusService, ProfileService, $rootScope, $timeout, $scope) {
 	var ctrl = this;
 	
 	ctrl.lists = [];
@@ -78891,12 +78891,53 @@ angular.module('VersusApp')
 
 	$rootScope.$on('web3', function() {
 	    console.log('web3loaded ctrl');
-	    VersusContract.getVersuses().then(function(result) {
-	    	console.log(result);
-	    	ctrl.feed = result;
-	    });
+	    VersusContract.getVersuses()
+		.then(function(result) {
+		    console.log(result);
+		    var fromId = result[0].c[0];
+		    var toId = result[1].c[0];
+		    var lst = [];
+		    for (var i=fromId, j=0; i<toId && j<100; i++, j++ ) {
+			lst.push(i);
+		    }
+		    console.log("fromId: ", fromId);
+		    console.log("toId: ", toId);
+		    console.log("lst: ", lst);
+		    return lst;
+		}).then(function(vIds) {
+		    _.map(vIds, function(vId) {
+			
+			//console.log(vId);
+			VersusContract.getVersus(vId).then(function(d) {
+			    console.log(d);
+			    var versus = fromContractToVersusObj(d);
+			    console.log(versus);
+			    ctrl.feed.push(versus);
+			    $scope.$digest();
+			});
+		    });
+		});
 	});
 
+
+	var fromContractToVersusObj = function(obj) {
+	    var obj;
+	    try {
+		obj = {
+		    pairId: obj[0].toNumber(),
+		    title:  web3.toUtf8(obj[1]),
+		    imageSrcA: web3.toUtf8(obj[2]),
+		    imageSrcB: web3.toUtf8(obj[3]),
+		    imageRatingA: obj[4].toNumber(),
+		    imageRatingB: obj[5].toNumber(),
+		    submitter: obj[6]
+		};
+	    }	catch(err) {
+		console.log("error when parsing from smart contracts: ", err);
+	    }
+	    return obj;
+	};
+	
 
 	var checkWeb3Loaded = function() {
 	    console.log("checking  web3");
@@ -78910,6 +78951,8 @@ angular.module('VersusApp')
 		checkWeb3Loaded();
 	    }, 1000);
 	};
+
+	
 	checkWeb3Loaded();			       
 
 	
@@ -78918,33 +78961,54 @@ angular.module('VersusApp')
 	// });
 
 	
-	ctrl.tap = function(list, side) {
-	    if (!list.selected) {
+	ctrl.tap = function(versus, side) {
+	    if (!versus.selected) {
 		var isSelected = true;
-		list.selected = isSelected;
+		versus.selected = isSelected;
 		if (isSelected) {
-		    list.A.selected = "A" === side;
-		    list.A.unselected = ! list.A.selected;
+		    versus.selectedA = "A" === side;
+		    versus.unselectedA = ! versus.selectedA;
 		    
-	            list.B.selected = "B" === side;
-		    list.B.unselected = ! list.B.selected;
+	            versus.selectedB = "B" === side;
+		    versus.unselectedB = ! versus.selectedB;
 		    
 		    // update rated count
-		    ProfileService.updateRatedCount(list, +1);
+		    ProfileService.updateRatedCount(versus, +1);
 		    ctrl.canConfirm = true;
 		}
 		// else {
-		//     list.A.selected = false;
-		//     list.A.unselected = false;
-		//     list.B.selected = false;
-		//     list.B.unselected = false;
+		//     versus.A.selected = false;
+		//     versus.A.unselected = false;
+		//     versus.B.selected = false;
+		//     versus.B.unselected = false;
 		    
 		//     // update rated count
-		//     ProfileService.updateRatedCount(list, -1);
+		//     ProfileService.updateRatedCount(versus, -1);
 		    
 		// }
 	    }
 	};
+
+
+	ctrl.submitPolls = function() {
+	    var versusIds = [];
+	    var chosenA = [];
+	    var selectedFeeds = _.filter(ctrl.feed, function(versus) { return versus.selected;});
+	    _.map(selectedFeeds, function(feed) {
+		versusIds.push(feed.pairId);
+		chosenA.push(feed.selectedA);
+	    });
+
+
+	    console.log("submitting polls: ", versusIds, chosenA);
+	    VersusContract.submitPolls(versusIds, chosenA).then(function(data) {
+		alert("polls submitted");
+		console.log("polls submitted");
+		console.log(data);
+	    });
+	};
+
+	
     }]).controller('ProfileCtrl', ['ProfileService', '$scope', '$rootScope', '$timeout',  function (ProfileService, $scope, $rootScope, $timeout) {
     	var ctrl = this;
     	ctrl.ratedCount = ProfileService.ratedCount;
@@ -78963,14 +79027,14 @@ angular.module('VersusApp')
 	});
 	
 	ctrl.submit = function() {
-	    console.log("submittin");
+	    var versus = {
+		title: ctrl.title,		
+		imageSrcA: ctrl.imageSrcA,
+		imageSrcB: ctrl.imageSrcB
+	    };
+	    console.log("submitting versus: ", versus);
 	    
-	    VersusContract.addVersus(
-		ctrl.imageSrcA,
-		ctrl.imageSrcB,
-		ctrl.title,
-		ctrl.submitter		  
-	    )
+	    VersusContract.addVersus(versus.title, versus.imageSrcA, versus.imageSrcB)
 		.then(function(data) {
 		    console.log(data);
 		    alert("updated");
