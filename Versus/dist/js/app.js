@@ -78456,7 +78456,7 @@ whenEnvIsLoaded(function() {
 if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
 	web3 = new Web3(web3.currentProvider);
 } else if (typeof Web3 !== 'undefined') {
-	web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+	web3 = new Web3(new Web3.providers.HttpProvider("http://192.168.0.64:8545"));
 }
 web3.eth.defaultAccount = web3.eth.accounts[0];
 })
@@ -78469,7 +78469,7 @@ var whenEnvIsLoaded = function(cb) {
   }
 }
 whenEnvIsLoaded(function() {
-VersusContract = new EmbarkJS.Contract({abi: [{"constant":true,"inputs":[{"name":"pairId","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"title","type":"bytes32"},{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"versusIds","type":"uint256[]"},{"name":"chosenA","type":"bool[]"}],"name":"submitPolls","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}], address: '0x2b2ae4e8707307daca28f2a21243e62170aee5b7', code: '606060405234610000575b60006001555b5b61051e806100206000396000f3006060604052361561005c5763ffffffff60e060020a60003504166356ec431481146100615780635eaff985146100b25780638d33916314610123578063b7f433d1146101ad578063dace9c90146101cf578063e132d941146101f5575b610000565b3461000057610071600435610214565b604080519788526020880196909652868601949094526060860192909252608085015260a0840152600160a060020a031660c0830152519081900360e00190f35b34610000576100c8600435602435604435610263565b6040805160208082528351818301528351919283929083019185810191028083838215610110575b80518252602083111561011057601f1990920191602091820191016100f0565b5050509050019250505060405180910390f35b34610000576101ab600480803590602001908201803590602001908080602002602001604051908101604052809392919081815260200183836020028082843750506040805187358901803560208181028481018201909552818452989a9989019892975090820195509350839250850190849080828437509496506103ef95505050505050565b005b34610000576101bd6004356104aa565b60408051918252519081900360200190f35b34610000576101dc6104cb565b6040805192835260208301919091528051918290030190f35b34610000576101bd6104ec565b60408051918252519081900360200190f35b60008181526002602081905260409091208054600182015492820154600383015460048401546005850154600690950154939594929391929091600160a060020a03165b919395979092949650565b60408051602080820183526000808352835161012081018552600180548083528285018a81528388018a8152606085018a81526080860187815260a0870188815233600160a060020a0390811660c08a01908152606460e08b019081526101008b018c8152988c5260029c8d90529d8b2099518a5595518989015593519988019990995590516003870155516004860155955160058501555160068401805473ffffffffffffffffffffffffffffffffffffffff191691909616179094559451600782015591516008909201919091558054928301808255919290918281838015829011610376576000838152602090206103769181019083015b80821115610372576000815560010161035e565b5090565b5b505050916000526020600020900160005b50600180549182905590810190555060008054604080516020808402820181019092528281529291908301828280156103e057602002820191906000526020600020905b8154815260200190600101908083116103cc575b505050505090505b9392505050565b600060008360018551038151811015610000576020908102909101810151600160a060020a03331660009081526003909252604082206001909101905591505b83518210156104a35760026000858481518110156100005790602001906020020151815260200190815260200160002090508282815181101561000057906020019060200201511561048b576004810180546001019055610497565b60058101805460010190555b5b60019091019061042f565b5b50505050565b600081815481101561000057906000526020600020900160005b5054905081565b600160a060020a0333166000908152600360205260409020546001545b9091565b600154815600a165627a7a723058200de669fd09d19fe619a2f124e8c309079e085ec1a17efe3fc40ae38bc744f4b00029', gasEstimates: {"creation":[5300,262000],"external":{"addVersus(bytes32,bytes32,bytes32)":null,"feedIds(uint256)":460,"getVersus(uint256)":921,"getVersuses()":514,"pairCounter()":352,"submitPolls(uint256[],bool[])":null},"internal":{}}});
+VersusContract = new EmbarkJS.Contract({abi: [{"constant":true,"inputs":[{"name":"pairId","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"title","type":"bytes32"},{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"versusIds","type":"uint256[]"},{"name":"chosenA","type":"bool[]"}],"name":"submitPolls","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}], address: '0x78b3d51b5cadf9b285cf2f27b21c0f2592f69756', code: '606060405234610000575b60006001555b5b61051e806100206000396000f3006060604052361561005c5763ffffffff60e060020a60003504166356ec431481146100615780635eaff985146100b25780638d33916314610123578063b7f433d1146101ad578063dace9c90146101cf578063e132d941146101f5575b610000565b3461000057610071600435610214565b604080519788526020880196909652868601949094526060860192909252608085015260a0840152600160a060020a031660c0830152519081900360e00190f35b34610000576100c8600435602435604435610263565b6040805160208082528351818301528351919283929083019185810191028083838215610110575b80518252602083111561011057601f1990920191602091820191016100f0565b5050509050019250505060405180910390f35b34610000576101ab600480803590602001908201803590602001908080602002602001604051908101604052809392919081815260200183836020028082843750506040805187358901803560208181028481018201909552818452989a9989019892975090820195509350839250850190849080828437509496506103ef95505050505050565b005b34610000576101bd6004356104aa565b60408051918252519081900360200190f35b34610000576101dc6104cb565b6040805192835260208301919091528051918290030190f35b34610000576101bd6104ec565b60408051918252519081900360200190f35b60008181526002602081905260409091208054600182015492820154600383015460048401546005850154600690950154939594929391929091600160a060020a03165b919395979092949650565b60408051602080820183526000808352835161012081018552600180548083528285018a81528388018a8152606085018a81526080860187815260a0870188815233600160a060020a0390811660c08a01908152606460e08b019081526101008b018c8152988c5260029c8d90529d8b2099518a5595518989015593519988019990995590516003870155516004860155955160058501555160068401805473ffffffffffffffffffffffffffffffffffffffff191691909616179094559451600782015591516008909201919091558054928301808255919290918281838015829011610376576000838152602090206103769181019083015b80821115610372576000815560010161035e565b5090565b5b505050916000526020600020900160005b50600180549182905590810190555060008054604080516020808402820181019092528281529291908301828280156103e057602002820191906000526020600020905b8154815260200190600101908083116103cc575b505050505090505b9392505050565b600060008360018551038151811015610000576020908102909101810151600160a060020a03331660009081526003909252604082206001909101905591505b83518210156104a35760026000858481518110156100005790602001906020020151815260200190815260200160002090508282815181101561000057906020019060200201511561048b576004810180546001019055610497565b60058101805460010190555b5b60019091019061042f565b5b50505050565b600081815481101561000057906000526020600020900160005b5054905081565b600160a060020a0333166000908152600360205260409020546001545b9091565b600154815600a165627a7a723058200de669fd09d19fe619a2f124e8c309079e085ec1a17efe3fc40ae38bc744f4b00029', gasEstimates: {"creation":[5300,262000],"external":{"addVersus(bytes32,bytes32,bytes32)":null,"feedIds(uint256)":460,"getVersus(uint256)":921,"getVersuses()":514,"pairCounter()":352,"submitPolls(uint256[],bool[])":null},"internal":{}}});
 });
 
 EmbarkJS.Storage.setProvider('ipfs', {server: 'localhost', port: '5001'});
@@ -79064,150 +79064,6 @@ angular.module('VersusApp')
     });
 
 	
-
-angular.module('VersusApp')   
-    .service('VersusService', function() {
-
-	var service = this;
-
-	// service.getVersuses =  VersusContract.getVersuses;o
-
-	
-	service.getVersuses2 = function() {
-
-	    return new Promise(function(resolve, reject)  {
-		var lists = [
-		    {
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},
-		{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},
-		{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		}];
-		
-		resolve(lists);
-	    });
-	    
-	};
-	
-
-    });
 
 // 'use strict';
 

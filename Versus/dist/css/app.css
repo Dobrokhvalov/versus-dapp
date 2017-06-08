@@ -125,15 +125,14 @@ img-crop{width:100%;height:100%;display:block;position:relative;overflow:hidden}
 }
 
 .background-photo {
-    height: 250px;
+    height: 100px;
     width: 100%;
     position: absolute;
     background-size: cover;
-    filter:blur(3px);
 }
 
 .background-blur {
-    height: 250px;
+    height: 75px;
     width: 100%;
     position: absolute;
     background-size: cover;
@@ -158,27 +157,12 @@ img-crop{width:100%;height:100%;display:block;position:relative;overflow:hidden}
     display: block;
 }
 
-.circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 26px;
-  color: #fff;
-  text-align: center;
-  background: #34495e;
-  display: block;
-  position: sticky;
-  margin: 50px;
-  margin-left: 124px;
-  line-height: -moz-block-height;
-  border: 3px solid #ec7063;
-}
-
 .app-name {
-    height: 250px;
+    height: 150px;
     width: 100%;
     position: absolute;
     padding: 0px;
+    background: #34495e;
 }
 
 .image-cropper {
@@ -213,7 +197,7 @@ img-crop{width:100%;height:100%;display:block;position:relative;overflow:hidden}
 
 .list-group-item.active, .list-group-item:focus, .list-group-item:hover {
     z-index: 2;
-    color: #f37046 !important;
+    color: #ec7063 !important;
     background-color: #fff !important;
     border-color: #fff;
     text-decoration: none;
@@ -227,6 +211,12 @@ img-crop{width:100%;height:100%;display:block;position:relative;overflow:hidden}
     position: absolute;
     padding-top: 17px;
     display: inline-block;
+						    }
+
+.main-title {
+    position: absolute;
+    margin-left: 20px;
+    font-size: 40px;
 }
 
 .fa-plus-circle {
@@ -272,4 +262,19 @@ img-crop{width:100%;height:100%;display:block;position:relative;overflow:hidden}
 
 .feecount {
     font-size: 25px;
+    margin-top: 25px;
+}
+
+.estimated-fee {
+    position: absolute;
+}
+
+.preview-img {
+    margin-top: 10px;
+}
+
+.versus-rating {
+    font-size: 25px;
+    margin-top: 25px;
+    margin-left: 70px;
 }
