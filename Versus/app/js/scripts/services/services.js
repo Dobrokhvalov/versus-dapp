@@ -1,143 +1,64 @@
 angular.module('VersusApp')   
-    .service('VersusService', function() {
+    .service('VersusService', ['$rootScope', '$timeout',  function($rootScope, $timeout) {
 
 	var service = this;
-
-	// service.getVersuses =  VersusContract.getVersuses;
-
+	service.userAddress = '';
+	web3.eth.getAccounts(function(err, result) {
+	    service.userAddress = result[0];
+	});
 	
-	service.getVersuses2 = function() {
 
-	    return new Promise(function(resolve, reject)  {
-		var lists = [
-		    {
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},
-		{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},
-		{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		},{
-		    pairId: 1,
-		    title: "Coke vs Pepsi",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "https://www.magictricks.com/assets/images/trickspix/airbornecokecan2.jpg",
-			"rating": 60
-		    },
-		    "B": {
-			"img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1OljVmgz4XzlFtdF0Pmdgc9Fc8-rgjoJsYGTJyVH2w4W11jUS6szkmQ",
-			rating: 40
-		    }		    
-		},{
-		    pairId: 2,
-		    title: "Punk vs HipHop",
-		    description : "bla bla bla",
-		    "A": {
-			"img": "http://9jaflaver.com/wp-content/uploads/2016/03/ac6e5981100beb736f2a981560d8cfb8.png?x62217",
-			"rating": 80
-		    },
-		    "B": {
-			"img": "https://s-media-cache-ak0.pinimg.com/736x/0f/43/67/0f436768f8d00f40281be5f8879e5b34.jpg",
-			rating: 20
-		    }		    
-		}];
+	service.addVersus = function(versus )  {
+	    return new Promise(function(resolve, reject) {
+		var abi = VersusContract.abi;
+		var cAddress = VersusContract.address;
+		var contractAbi = web3.eth.contract(abi);
+		var contract = contractAbi.at(cAddress);
 		
-		resolve(lists);
+		contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {from: web3.eth.coinbase, value:web3.toWei(versus.cost,'ether')},
+						   function(err, result) {
+						       
+						       if(err) reject(err);
+						       console.log(result);
+						       resolve(result);
+						   });
+		
 	    });
+	};
+	service.onWeb3Load = function(cb) {
 	    
+	    console.log("checking  web3");
+	    if (VersusContract !== undefined) {
+		cb();
+		return null;
+	    };
+	    $timeout(function() {
+		service.onWeb3Load(cb);
+	    }, 1000);
+	};
+	
+	service.fromContractToVersusObj = function(obj) {
+	    var obj;
+	    try {
+		obj = {
+		    pairId: obj[0].toNumber(),
+		    title:  web3.toUtf8(obj[1]),
+		    imageSrcA: web3.toUtf8(obj[2]),
+		    imageSrcB: web3.toUtf8(obj[3]),
+		    imageRatingA: obj[4].toNumber(),
+		    imageRatingB: obj[5].toNumber(),
+		    pollMaxNumber: obj[6].toNumber(),
+		    submitter: obj[7]
+		};
+	    }	catch(err) {
+		console.log("error when parsing from smart contracts: ", err);
+	    }
+	    return obj;
 	};
 	
 
-    });
+
+
+	
+
+    }]);

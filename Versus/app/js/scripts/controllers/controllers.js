@@ -2,85 +2,43 @@ var VersusContract;
 angular.module('VersusApp')   
     .controller('ListCtrl', ['VersusService', 'ProfileService', '$rootScope', '$timeout', '$scope', function(VersusService, ProfileService, $rootScope, $timeout, $scope) {
 	var ctrl = this;
-	
-	ctrl.lists = [];
 	ctrl.canConfirm = false;
-
 	ctrl.feedMode = true;
-
 	ctrl.feed = [];
-
-	$rootScope.$on('web3', function() {
-	    console.log('web3loaded ctrl');
+	
+	var fetchFeed = function() {
 	    VersusContract.getVersuses()
-		.then(function(result) {
-		    console.log(result);
-		    var fromId = result[0].c[0];
-		    var toId = result[1].c[0];
-		    var lst = [];
-		    for (var i=fromId, j=0; i<toId && j<100; i++, j++ ) {
-			lst.push(i);
-		    }
-		    console.log("fromId: ", fromId);
-		    console.log("toId: ", toId);
-		    console.log("lst: ", lst);
-		    return lst;
-		}).then(function(vIds) {
-		    _.map(vIds, function(vId) {
+	    	.then(function(result) {
+	    	    console.log(result);
+	    	    var fromId = result[0].c[0];
+	    	    var toId = result[1].c[0];
+	    	    var lst = [];
+	    	    for (var i=fromId, j=0; i<toId && j<100; i++, j++ ) {
+	    		lst.push(i);
+	    	    }
+	    	    console.log("fromId: ", fromId);
+	    	    console.log("toId: ", toId);
+	    	    console.log("lst: ", lst);
+	    	    return lst;
+	    	}).then(function(vIds) {
+	    	    _.map(vIds, function(vId) {
 			
-			//console.log(vId);
-			VersusContract.getVersus(vId).then(function(d) {
-			    console.log(d);
-			    var versus = fromContractToVersusObj(d);
-			    console.log(versus);
-			    ctrl.feed.push(versus);
-			    $scope.$digest();
-			});
-		    });
-		});
-	});
-
-
-	var fromContractToVersusObj = function(obj) {
-	    var obj;
-	    try {
-		obj = {
-		    pairId: obj[0].toNumber(),
-		    title:  web3.toUtf8(obj[1]),
-		    imageSrcA: web3.toUtf8(obj[2]),
-		    imageSrcB: web3.toUtf8(obj[3]),
-		    imageRatingA: obj[4].toNumber(),
-		    imageRatingB: obj[5].toNumber(),
-		    submitter: obj[6]
-		};
-	    }	catch(err) {
-		console.log("error when parsing from smart contracts: ", err);
-	    }
-	    return obj;
-	};
-	
-
-	var checkWeb3Loaded = function() {
-	    console.log("checking  web3");
-	    if (VersusContract !== undefined) {
-		console.log("web3 laoded");
-		$rootScope.$broadcast('web3');
-		console.log("event transmitted");
-		return null;
-	    };
-	    $timeout(function() {
-		checkWeb3Loaded();
-	    }, 1000);
+	    		VersusContract.getVersus(vId).then(function(d) {
+	    		    console.log(d);
+	    		    var versus = VersusService.fromContractToVersusObj(d);
+	    		    console.log(versus);
+			    if (versus.submitter !== VersusService.userAddress 
+				 && versus.pollMaxNumber > (versus.imageRatingA + versus.imageRatingB)
+			       ) {
+	    			ctrl.feed.push(versus);
+	    			$scope.$digest();
+			    }
+	    		});
+	    	    });
+	    	});	
 	};
 
-	
-	checkWeb3Loaded();			       
-
-	
-	// VersusService.getVersuses().then(function(lists) {
-	//     ctrl.lists = lists;
-	// });
-
+	VersusService.onWeb3Load(fetchFeed);
 	
 	ctrl.tap = function(versus, side) {
 	    if (!versus.selected) {
@@ -97,16 +55,7 @@ angular.module('VersusApp')
 		    ProfileService.updateRatedCount(versus, +1);
 		    ctrl.canConfirm = true;
 		}
-		// else {
-		//     versus.A.selected = false;
-		//     versus.A.unselected = false;
-		//     versus.B.selected = false;
-		//     versus.B.unselected = false;
-		    
-		//     // update rated count
-		//     ProfileService.updateRatedCount(versus, -1);
-		    
-		// }
+
 	    }
 	};
 
@@ -140,9 +89,9 @@ angular.module('VersusApp')
 
 	
 	
-    }]).controller('NewVersusCtrl', function () {
+    }]).controller('NewVersusCtrl', ['$state','VersusService',  function ($state, VersusService) {
     	var ctrl = this;
-	ctrl.feePerPerson = 0.1;
+	ctrl.feePerPerson = 0.01;
 	ctrl.peopleNum = 10;
 
 	
@@ -153,26 +102,58 @@ angular.module('VersusApp')
 	    ctrl.fee = ctrl.peopleNum * ctrl.feePerPerson;
 	};
 
-	ctrl.onpeopleNumChange();
-	
-
-	
-
 	ctrl.submit = function() {
 	    var versus = {
 		title: ctrl.title,		
 		imageSrcA: ctrl.imageSrcA,
-		imageSrcB: ctrl.imageSrcB
+		imageSrcB: ctrl.imageSrcB,
+		pollMaxNumber: ctrl.peopleNum
 	    };
 	    console.log("submitting versus: ", versus);
+
+	    versus.cost = versus.pollMaxNumber * ctrl.feePerPerson;
 	    
-	    VersusContract.addVersus(versus.title, versus.imageSrcA, versus.imageSrcB)
+	    VersusService.addVersus(versus)
 		.then(function(data) {
 		    console.log(data);
-		    alert("updated");
+		    alert("Versus added");
+		    $state.go('myversuses');
 		});
 	};
+
+	ctrl.onpeopleNumChange();
 	
-    });
+
+	
+    }]).controller('MyVersusCtrl', ['VersusService', '$scope', function(VersusService, $scope) {
+	var ctrl = this;
+	ctrl.feed = [];
+
+	
+	var fetchFeed = function() {
+	    VersusContract.getUserVersuses()
+	    	.then(function(result) {
+		    lst = _.map(result, function(r) {
+			return r.c[0];
+		    });
+	    	    return lst;
+	    	}).then(function(vIds) {
+	    	    _.map(vIds, function(vId) {
+			
+	    		VersusContract.getVersus(vId).then(function(d) {
+	    		    console.log(d);
+	    		    var versus = VersusService.fromContractToVersusObj(d);
+	    		    console.log(versus);
+	    		    ctrl.feed.push(versus);
+	    		    $scope.$digest();
+	    		});
+	    	    });
+	    	});	
+	};
+
+	VersusService.onWeb3Load(fetchFeed);
+
+    }]);
+
 
 	

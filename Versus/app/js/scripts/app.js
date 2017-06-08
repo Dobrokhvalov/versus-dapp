@@ -34,7 +34,8 @@ versusApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
 	    templateUrl: "js/views/pages/new-versus.html"
 	})
     	.state('myversuses', {
-	    url: "/my-versuses",	    
+	    url: "/my-versuses",
+	    controller: "MyVersusCtrl as ctrl",
 	    templateUrl: "js/views/pages/my-versuses.html"
 	})   
 	.state('about', {
