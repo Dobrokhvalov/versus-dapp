@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="paybox-text"><div class="paybox-rules"><h1>
     Created versuses
 </h1>
@@ -21,12 +22,42 @@
 	    <div class="col-xs-6  col-no-padding">
 		<row><img class="versus-img" src="http://i.imgur.com/JWzxkrR.jpg"</img></row>
 		<row><div class ="versus-rating">20</div></row>
+=======
+
+
+
+<div>
+    
+    
+    <div class="panel panel-default ng-scope" ng-repeat="versus in ctrl.feed | orderBy: 'pairId'" >
+	<div class="panel-heading">
+	    <h3 class="panel-title">{{ versus.title}}</h3>
+	</div>
+	
+	<div class="panel-body ng-binding">
+	    
+	    <div class="col-xs-6 col-no-padding" ng-class="{'active':versus.selectedA, 'unselected': versus.unselectedA}">
+		<img class="versus-img" ng-click="ctrl.tap(versus, 'A')" ng-src="{{versus.imageSrcA}}"></img><div class="selected-filter"><i class="fa fa-check-circle" aria-hidden="true"></i>
+		</div>
+	    </div>
+	    <div class="col-xs-6  col-no-padding" ng-class="{'active':versus.selectedB, 'unselected': versus.unselectedB}">
+		<img ng-src="{{versus.imageSrcB}}" ng-click="ctrl.tap(versus, 'B')" class="versus-img"></img>
+		<div class="selected-filter"><i class="fa fa-check-circle" aria-hidden="true"></i>
+		</div>
+>>>>>>> v02-md
 	    </div>	   	    
 	</div>
 
     </div>
     
+<<<<<<< HEAD
     
 </div>	    
 
 
+=======
+</div>	    
+
+
+
+>>>>>>> v02-md
