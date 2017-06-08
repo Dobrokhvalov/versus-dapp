@@ -6,6 +6,8 @@
       "index.html": "app/index.html",
       "js/views/pages/list.html": "app/js/views/pages/list.html",
       "js/views/pages/new-versus.html": "app/js/views/pages/new-versus.html",
+      "js/views/pages/my-versuses.html": "app/js/views/pages/my-versuses.html",
+      "js/views/pages/about.html": "app/js/views/pages/about.html",
       "js/views/pages/claim-payout-overlay.html": "app/js/views/pages/claim-payout-overlay.html"
   },
   "buildDir": "dist/",

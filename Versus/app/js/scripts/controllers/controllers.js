@@ -142,11 +142,22 @@ angular.module('VersusApp')
 	
     }]).controller('NewVersusCtrl', function () {
     	var ctrl = this;
+	ctrl.feePerPerson = 0.1;
+	ctrl.peopleNum = 10;
 
-	web3.eth.getAccounts(function(err, result) {
-	    ctrl.submitter = result[0];
-	});
 	
+	ctrl.onpeopleNumChange = function(val) {
+	    if (val < 10) {
+		ctrl.peopleNum = 10;
+	    };
+	    ctrl.fee = ctrl.peopleNum * ctrl.feePerPerson;
+	};
+
+	ctrl.onpeopleNumChange();
+	
+
+	
+
 	ctrl.submit = function() {
 	    var versus = {
 		title: ctrl.title,		

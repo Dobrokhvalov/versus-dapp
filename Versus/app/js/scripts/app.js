@@ -32,7 +32,16 @@ versusApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvide
 	    url: "/new",	    
 	    controller: "NewVersusCtrl as ctrl",
 	    templateUrl: "js/views/pages/new-versus.html"
+	})
+    	.state('myversuses', {
+	    url: "/my-versuses",	    
+	    templateUrl: "js/views/pages/my-versuses.html"
+	})   
+	.state('about', {
+	    url: "/about",	    
+	    templateUrl: "js/views/pages/about.html"
 	});    
+    
 }]);
 
 

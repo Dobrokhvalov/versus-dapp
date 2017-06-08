@@ -1,11 +1,11 @@
 
-<form name="addversus" role="form" ng-submit="login()" class="ng-pristine ng-valid ng-valid-email">
+<form name="addversus" role="form"  class="ng-pristine ng-valid ng-valid-email">
     <fieldset>
 	<div class="paybox-text"><div class="paybox-rules">
 	    <h1>
 		Submit new versus
 	    </h1>
-	    <h3>1. Choose a title for your versus.<br><br>2. Submit pictures by pasting their links into the "A" and "B" fields (Image upload is not supported at the moment).<br><br>3. Choose how many people you want to participate in the versus poll (post fee depends on the amount of people: 0.01 Eth/person).<br><br>4. Press "Submit" to post your versus.
+	    <h3>1. Choose a title for your versus.<br><br>2. Submit pictures by pasting their links into the "A" and "B" fields (Image upload is not supported at the moment).<br><br>3. Choose how many people you want to participate in the versus poll (post fee depends on the amount of people: {{ctrl.feePerPerson}} Eth/person).<br><br>4. Press "Submit" to post your versus.
 	    </h3>
 	</div>
 	
@@ -37,14 +37,14 @@
 	    <div class="col-xs-6">
 		<div class="form-group has-success has-feedback">	    
 		    <label>Amount of polls</label>
-		    <input type="number" class="form-control" name="input" ng-model="ctrl.value"  min="10" required>
+		    <input type="number" class="form-control" name="input" ng-model="ctrl.peopleNum" ng-change="ctrl.onpeopleNumChange($value)"  min="10" required>
 		</div>
 	    </div>
 	    <div class="col-xs-6">
 		<div class="form-group has-success has-feedback">
-		    
+		  
 		    <label>Estimated fee:<br><br></label>
-		    <div class="feecount" name="feecount">10</div>
+		    <div class="feecount" name="feecount"> {{ctrl.fee}}</div>
 		</div>
 	    </div>
 	    
