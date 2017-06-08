@@ -3,7 +3,10 @@ angular.module('VersusApp')
 
 	var service = this;
 
-	service.getVersuses = function() {
+	// service.getVersuses =  VersusContract.getVersuses;
+
+	
+	service.getVersuses2 = function() {
 
 	    return new Promise(function(resolve, reject)  {
 		var lists = [

@@ -1,121 +1,167 @@
+var VersusContract;
 angular.module('VersusApp')   
-    .controller('ListCtrl', ['VersusService', 'ProfileService', function(VersusService, ProfileService) {
+    .controller('ListCtrl', ['VersusService', 'ProfileService', '$rootScope', '$timeout', '$scope', function(VersusService, ProfileService, $rootScope, $timeout, $scope) {
 	var ctrl = this;
 	
 	ctrl.lists = [];
 	ctrl.canConfirm = false;
 
 	ctrl.feedMode = true;
-	
-	VersusService.getVersuses().then(function(lists) {
-	    ctrl.lists = lists;
+
+	ctrl.feed = [];
+
+	$rootScope.$on('web3', function() {
+	    console.log('web3loaded ctrl');
+	    VersusContract.getVersuses()
+		.then(function(result) {
+		    console.log(result);
+		    var fromId = result[0].c[0];
+		    var toId = result[1].c[0];
+		    var lst = [];
+		    for (var i=fromId, j=0; i<toId && j<100; i++, j++ ) {
+			lst.push(i);
+		    }
+		    console.log("fromId: ", fromId);
+		    console.log("toId: ", toId);
+		    console.log("lst: ", lst);
+		    return lst;
+		}).then(function(vIds) {
+		    _.map(vIds, function(vId) {
+			
+			//console.log(vId);
+			VersusContract.getVersus(vId).then(function(d) {
+			    console.log(d);
+			    var versus = fromContractToVersusObj(d);
+			    console.log(versus);
+			    ctrl.feed.push(versus);
+			    $scope.$digest();
+			});
+		    });
+		});
 	});
 
+
+	var fromContractToVersusObj = function(obj) {
+	    var obj;
+	    try {
+		obj = {
+		    pairId: obj[0].toNumber(),
+		    title:  web3.toUtf8(obj[1]),
+		    imageSrcA: web3.toUtf8(obj[2]),
+		    imageSrcB: web3.toUtf8(obj[3]),
+		    imageRatingA: obj[4].toNumber(),
+		    imageRatingB: obj[5].toNumber(),
+		    submitter: obj[6]
+		};
+	    }	catch(err) {
+		console.log("error when parsing from smart contracts: ", err);
+	    }
+	    return obj;
+	};
 	
-	ctrl.tap = function(list, side) {
-	    if (!list.selected) {
+
+	var checkWeb3Loaded = function() {
+	    console.log("checking  web3");
+	    if (VersusContract !== undefined) {
+		console.log("web3 laoded");
+		$rootScope.$broadcast('web3');
+		console.log("event transmitted");
+		return null;
+	    };
+	    $timeout(function() {
+		checkWeb3Loaded();
+	    }, 1000);
+	};
+
+	
+	checkWeb3Loaded();			       
+
+	
+	// VersusService.getVersuses().then(function(lists) {
+	//     ctrl.lists = lists;
+	// });
+
+	
+	ctrl.tap = function(versus, side) {
+	    if (!versus.selected) {
 		var isSelected = true;
-		list.selected = isSelected;
+		versus.selected = isSelected;
 		if (isSelected) {
-		    list.A.selected = "A" === side;
-		    list.A.unselected = ! list.A.selected;
+		    versus.selectedA = "A" === side;
+		    versus.unselectedA = ! versus.selectedA;
 		    
-	            list.B.selected = "B" === side;
-		    list.B.unselected = ! list.B.selected;
+	            versus.selectedB = "B" === side;
+		    versus.unselectedB = ! versus.selectedB;
 		    
 		    // update rated count
-		    ProfileService.updateRatedCount(list, +1);
+		    ProfileService.updateRatedCount(versus, +1);
 		    ctrl.canConfirm = true;
 		}
 		// else {
-		//     list.A.selected = false;
-		//     list.A.unselected = false;
-		//     list.B.selected = false;
-		//     list.B.unselected = false;
+		//     versus.A.selected = false;
+		//     versus.A.unselected = false;
+		//     versus.B.selected = false;
+		//     versus.B.unselected = false;
 		    
 		//     // update rated count
-		//     ProfileService.updateRatedCount(list, -1);
+		//     ProfileService.updateRatedCount(versus, -1);
 		    
 		// }
 	    }
 	};
-    }]).controller('ProfileCtrl', ['ProfileService', '$scope', function (ProfileService, $scope) {
+
+
+	ctrl.submitPolls = function() {
+	    var versusIds = [];
+	    var chosenA = [];
+	    var selectedFeeds = _.filter(ctrl.feed, function(versus) { return versus.selected;});
+	    _.map(selectedFeeds, function(feed) {
+		versusIds.push(feed.pairId);
+		chosenA.push(feed.selectedA);
+	    });
+
+
+	    console.log("submitting polls: ", versusIds, chosenA);
+	    VersusContract.submitPolls(versusIds, chosenA).then(function(data) {
+		alert("polls submitted");
+		console.log("polls submitted");
+		console.log(data);
+	    });
+	};
+
+	
+    }]).controller('ProfileCtrl', ['ProfileService', '$scope', '$rootScope', '$timeout',  function (ProfileService, $scope, $rootScope, $timeout) {
     	var ctrl = this;
     	ctrl.ratedCount = ProfileService.ratedCount;
 	$scope.$on('profileCountChange', function() {
     	    ctrl.ratedCount = ProfileService.ratedCount;
+	    
+	});
+
+	
+	
+    }]).controller('NewVersusCtrl', function () {
+    	var ctrl = this;
+
+	web3.eth.getAccounts(function(err, result) {
+	    ctrl.submitter = result[0];
 	});
 	
-    }]).controller('NewVersusCtrl', ['$scope', function ($scope) {
-    	var ctrl = this;
-	$scope.modal2 = true;
-	ctrl.modal2 = true;
-	
-	ctrl.sumbit = function() {
-	    alert("submitting!");
+	ctrl.submit = function() {
+	    var versus = {
+		title: ctrl.title,		
+		imageSrcA: ctrl.imageSrcA,
+		imageSrcB: ctrl.imageSrcB
+	    };
+	    console.log("submitting versus: ", versus);
+	    
+	    VersusContract.addVersus(versus.title, versus.imageSrcA, versus.imageSrcB)
+		.then(function(data) {
+		    console.log(data);
+		    alert("updated");
+		});
 	};
 	
-    }]);
+    });
 
 	
-	// ctrl.confirm = function() {
-	//     if (ctrl.canConfirm) {
-	// 	ProfileService.currentProfile.egoCount += 1;
-		
-	// 	init();
-	//     }
-	// };
-	
-	// ctrl.checkIfCanConfirm = function() {
-	//     var selectedCount = _.filter(ctrl.dapplers, function(d) {return d.selected;}).length;
-	//     console.log(selectedCount);
-	//     ctrl.canConfirm = (selectedCount === 2);
-	// };
-	
-	// var init = function() {	
-	//     ctrl.dapplers = [];
-	
-	//     ctrl.canConfirm = false;
-	//     DopplrContracts
-	// 	.fetchNextDapplers()
-	// 	.then(function(data) {
-	// 	    ctrl.dapplers = data.dapplers;
-	// 	});
-	//     };
-	
-	// init();
-	
-	
-	
-    // }]);
-    // .controller('MatchesCtrl', ['DopplrContracts', function (DopplrContracts) {
-    // 	var ctrl = this;
-	
-    // 	ctrl.matches = [];
-    // 	ctrl.rankedCount = 0;
-	
-    // 	ctrl.chat = function(match) {
-    // 	    alert("Chat Not implemented!");
-    // 	};
-
-    // 	ctrl.unlock = function(match) {
-    // 	    alert("Unlock Not implemented!");
-    // 	};
-
-
-    // 	var init = function() {	
-    // 	    DopplrContracts
-    // 		.fetchMatches()
-    // 		.then(function(data) {
-    // 		    ctrl.matches = data.matches;
-    // 		    ctrl.rankedCount = data.rankedCount;
-    // 		});
-    // 	    };
-	
-
-    // 	init();
-
-
-
-    // }])
-
