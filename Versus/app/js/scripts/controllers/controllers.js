@@ -1,8 +1,6 @@
 
 angular.module('VersusApp')   
-    .controller('ListCtrl', ['VersusService',  '$scope', '$window', function(VersusService , $scope , $window) {
-
-	
+    .controller('ListCtrl', ['VersusService',  '$scope', '$state','$timeout','AlertSrvc', function(VersusService , $scope , $state, $timeout, AlertSrvc) {
 	
 	var ctrl = this;
 	ctrl.canConfirm = false;
@@ -10,14 +8,22 @@ angular.module('VersusApp')
 	ctrl.feed = [];
 	ctrl.fee = 0.01;
 	ctrl.ratedCount = 0;
+
+
+	AlertSrvc.showLoading('Loading...', 'Loading feed... Please wait').then(function() {
+	    console.log("feed loaded", ctrl.feed);
+	    $scope.$digest();		
+	});
+
 	
 	var fetchFeed = function() {
+	    
 	    ctrl.feed = [];
 	    ctrl.canConfirm = false;
 	    ctrl.feedMode = true;
 	    ctrl.ratedCount = 0;
-	    
-	    
+	    var ratedPairs = JSON.parse(localStorage.getItem("pairs")) || [];
+		
 	    VersusService.getVersuses()
 	    	.then(function(result) {
 	    	    console.log(result);
@@ -25,31 +31,39 @@ angular.module('VersusApp')
 	    	    var toId = result[1].c[0];
 	    	    var lst = [];
 	    	    for (var i=fromId, j=0; i<toId && j<100; i++, j++ ) {
-	    		lst.push(i);
+			if (!_.contains(ratedPairs, i)) {			
+	    		    lst.push(i);
+			} else {
+			    j -=1;
+			}
 	    	    }
 	    	    console.log("fromId: ", fromId);
 	    	    console.log("toId: ", toId);
 	    	    console.log("lst: ", lst);
 	    	    return lst;
 	    	}).then(function(vIds) {
-	    	    _.map(vIds, function(vId) {
-			
-	    		VersusService.getVersus(vId).then(function(d) {
+
+		    
+	    	    var vPromises = _.map(vIds, function(vId) {
+			return 	VersusService.getVersus(vId);
+		    });
+		    Promise.all(vPromises).then(function(versuses) {
+			console.log("all promises resolved: ", versuses);
+			_.map(versuses, function(d) {
 	    		    console.log(d);
 	    		    var versus = VersusService.fromContractToVersusObj(d);
 	    		    console.log(versus);
 			    if (versus.submitter !== VersusService.userAddress 
-				 && versus.pollMaxNumber > (versus.imageRatingA + versus.imageRatingB)
+				&& versus.pollMaxNumber > (versus.imageRatingA + versus.imageRatingB)
 			       ) {
 	    			ctrl.feed.push(versus);
-	    			$scope.$digest();
 			    }
 	    		});
+			AlertSrvc.endLoading();
 	    	    });
-	    	});	
+	    	});	    
 	};
 
-	VersusService.onWeb3Load(fetchFeed);
 	
 	ctrl.tap = function(versus, side) {
 	    if (!versus.selected) {
@@ -71,44 +85,81 @@ angular.module('VersusApp')
 
 
 	ctrl.submitPolls = function() {
-
-	    ctrl.canConfirm = false;
-	    ctrl.feedMode = true;
-	    ctrl.feed = [];
 	    
 	    var versusIds = [];
 	    var chosenA = [];
 	    var selectedFeeds = _.filter(ctrl.feed, function(versus) { return versus.selected;});
 	    _.map(selectedFeeds, function(feed) {
-		versusIds.push(feed.pairId);
-		chosenA.push(feed.selectedA);
+	    	versusIds.push(feed.pairId);
+	    	chosenA.push(feed.selectedA);
 	    });
+	    
+	    
+	    ctrl.canConfirm = false;
+	    ctrl.feedMode = true;
+	    ctrl.feed = [];
 
-
-	    console.log("submitting polls: ", versusIds, chosenA);
+	    
+	    console.log("ctrl.submitting polls: ", versusIds, chosenA);
 	    
 	    VersusService.submitPolls(versusIds, chosenA).then(function(data) {
-				
-		console.log("polls submitted");
-		console.log(data);
 		
-		alert("Hooray! Payout claimed, check your balance.");
-		$window.location.reload();
-	    }).catch(function() {
-		$window.location.reload();
+	    	console.log("polls submitted");
+	    	console.log(data);
+
+	    	AlertSrvc.alert("Success", "Hooray! Payout claimed, check your balance in several minutes. Note that transaction can take some time. Please wait and refresh page later.").then(function() {
+	    	    $state.reload();
+		});
+	    }).catch(function(error) {
+		AlertSrvc.alert("Error", "Oops! something went wrong. Here is the error: " + error).then(function() {
+	    	    $state.reload();
+		});
 	    });
 	};
+	
+	
+	// initing page
+	$timeout(function() {
+	    	VersusService.onWeb3Load(fetchFeed);
+	}, 500);
+	
+	
+    }]).controller('NavController', ['$state', function($state) {
+	navCtrl = this;
+	navCtrl.refreshPage = function() {
+	    $state.reload();
+	};
+	
+
+   }]).controller('ProfileCtrl', ['VersusService', '$rootScope', '$scope', function(VersusService, $rootScope, $scope) {
+	var ctrl = this;
+	ctrl.address = 'dd';
+	ctrl.log = 'log inited';
+       
+       
+	$rootScope.$on('gotProfileAddress', function() {
+	    var msg = "got address in profile Ctrl <br>" + VersusService.userAddress;
+	    console.log(msg);
+	    ctrl.log += msg;
+
+	    ctrl.address = VersusService.userAddress;
+	});
+	$rootScope.$on('gotProfileBalance', function() {
+	    var msg = "got balance in profile Ctrl <br>" + VersusService.userBalance;
+	    console.log(msg);
+	    ctrl.log += msg;
+
+	    ctrl.balance = VersusService.userBalance;
+	    $scope.$digest();
+	});
 
 	
-    }]).controller('ProfileCtrl', function() {
-    	var ctrl = this;
-	
-    }).controller('NewVersusCtrl', ['$state','VersusService',  function ($state, VersusService) {
+   }]).controller('NewVersusCtrl', ['$state','VersusService', 'AlertSrvc', function ($state, VersusService, AlertSrvc) {
     	var ctrl = this;
 	ctrl.feePerPerson = 0.01;
 	ctrl.peopleNum = 10;
-
-	
+       
+       
 	ctrl.onpeopleNumChange = function(val) {
 	    if (val < 10) {
 		ctrl.peopleNum = 10;
@@ -124,14 +175,15 @@ angular.module('VersusApp')
 		pollMaxNumber: ctrl.peopleNum
 	    };
 	    console.log("submitting versus: ", versus);
-
+	    
 	    versus.cost = versus.pollMaxNumber * ctrl.feePerPerson;
 	    
 	    VersusService.addVersus(versus)
 		.then(function(data) {
 		    console.log(data);
-		    alert("Versus added");
-		    $state.go('myversuses');
+		    AlertSrvc.alert("Success", "Versus added! It can take several minutes for new versus to appear in My Versuses Feed").then(function() {
+			$state.go('myversuses');
+		    });
 		});
 	};
 
@@ -167,6 +219,56 @@ angular.module('VersusApp')
 
 	VersusService.onWeb3Load(fetchFeed);
 
+    }]).controller('AppController', ['$rootScope', '$scope', function($rootScope, $scope) {
+	var appCtrl = this;
+	appCtrl.showAlert = false;
+	appCtrl.msg = '';
+	appCtrl.title = '';
+	appCtrl.showButton = false;
+
+	
+	$rootScope.$on('alert', function(event, args) {
+	    console.log("got msg in alert: ", args.msg);
+	    appCtrl.msg = args.msg;
+	    appCtrl.title = args.title;
+	    appCtrl.showAlert = true;
+	    appCtrl.showButton = true;
+	    $scope.$digest();
+	});
+
+
+	$rootScope.$on('loading', function(event, args) {
+	    console.log("got msg in loading: ", args.msg);
+	    appCtrl.msg = args.msg;
+	    appCtrl.title = args.title;
+	    appCtrl.showAlert = true;
+	    appCtrl.showButton = false;
+	    $scope.$digest();
+	});
+
+
+	
+	$rootScope.$on('loaded', function() {
+	    //console.log("got msg in alert: ", args.msg);
+	    appCtrl.msg = '';
+	    appCtrl.title = '';
+	    appCtrl.showAlert = false;
+	    appCtrl.showButton = false;
+	    
+	    $scope.$digest();
+	});
+	
+	
+	appCtrl.dismiss = function() {
+	    appCtrl.showAlert = false;
+	    appCtrl.msg = '';
+	    appCtrl.title = '';
+	    $rootScope.$broadcast('alertDismissed');
+	    $scope.$digest();
+	};
+	
+	
+	
     }]);
 
 

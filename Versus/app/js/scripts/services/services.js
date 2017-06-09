@@ -1,6 +1,7 @@
-var VersusContract;
+var web3;
+
 angular.module('VersusApp')   
-    .service('VersusService', ['$rootScope', '$timeout', 'VersusContract_',   function($rootScope, $timeout, VersusContract_) {
+    .service('VersusService', ['$rootScope', '$timeout', 'VersusContract_',  function($rootScope, $timeout, VersusContract_) {
 	
 	var service = this;	
 	service.userAddress = '';
@@ -8,12 +9,34 @@ angular.module('VersusApp')
 	
 	var setup = function() {
 	    
-	    web3.eth.getAccounts(function(err, result) {
-		if (!err && result !== undefined) {
-		    service.userAddress = result[0];
-		}
-	    });
 
+	    $timeout(function() {
+
+		web3.eth.getAccounts(function(err, result) {
+		    if (!err && result !== undefined) {
+			console.log("got address", result);
+			service.userAddress = result[0];
+			web3.eth.defaultAccount = result[0];
+			$rootScope.$broadcast("gotProfileAddress");
+			service.getBalance();
+		    }
+		});
+
+		service.getBalance = function() {
+		    web3.eth.getBalance(service.userAddress, function(err, result) {
+			if (!err && result !== undefined) {
+			    console.log("got balance", result);
+			    
+			    service.userBalance = web3.fromWei(result.toNumber().toPrecision(6), 'ether');
+
+			    $rootScope.$broadcast("gotProfileBalance", service.userBalance);
+			}
+		    });
+		};
+	    },1000);
+
+	    
+	    
 	    VersusContract_.init();
 	    
 	    service.getVersuses = VersusContract_.getVersuses;
@@ -63,7 +86,7 @@ angular.module('VersusApp')
 	service.onWeb3Load(setup);
 	
 	return service; 
-    }]).service('VersusContract_', function() {
+    }]).service('VersusContract_', ['AlertSrvc', function(AlertSrvc) {
 
 	// address of contract
 	var CONTRACT_ADDRESS = '0x9684744c20734d370C9232f7E47B17E8Fcc11FFE';
@@ -121,15 +144,32 @@ angular.module('VersusApp')
 
 	service.submitPolls = function(ids, bools) {
 	    return new Promise(function(resolve, reject) {
-		service.contract.submitPolls(ids, bools,function(error, result){
-		    if(!error) {
-			console.log(result);
-			resolve(result);
-		    } else {
-			console.error(error);
-			reject(error);
-		    }
-		});
+		console.log(ids, bools);
+		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
+		var ratedPairs = JSON.parse(localStorage.getItem("pairs")) || [];
+		try {
+		    service.contract.submitPolls(ids, bools,function(error, result){
+			AlertSrvc.endLoading();
+			if(!error) {
+			    console.log(result);
+			    
+			    _.map(ids, function(id) {
+				ratedPairs.push(id);
+			    });
+			    
+			    localStorage.setItem("pairs", JSON.stringify(ratedPairs));
+			    
+			    
+			    resolve(result);
+			} else {
+			    reject(error);
+			}
+		    });
+		} catch(err) {
+		    reject(err);		    
+		}
+
+
 		
 	    });
 	};
@@ -138,9 +178,12 @@ angular.module('VersusApp')
 	
 	
 	service.addVersus = function(versus )  {
-		return new Promise(function(resolve, reject) {		    
+	    return new Promise(function(resolve, reject) {
+
+		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
 		    service.contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {from: web3.eth.coinbase, value:web3.toWei(versus.cost,'ether')}, function(err, result) {
-								   
+
+			AlertSrvc.endLoading();
 			if(err) reject(err);
 			console.log(result);
 			resolve(result);
@@ -149,8 +192,37 @@ angular.module('VersusApp')
 		});
 	};
 	
-
+	
 	
 	return service;
 	    
-    });
+    }]).service('AlertSrvc', ['$rootScope', function($rootScope) {
+	var service = this;
+	
+	service.alert = function(title, msg) {
+	    return new Promise(function(resolve, reject) {
+		console.log("invoking alert with:", msg);
+		$rootScope.$broadcast('alert',{msg: msg, title: title});
+		$rootScope.$on('alertDismissed', function() {
+		    resolve();
+		});
+	    });
+	};
+
+	service.showLoading = function(title, msg) {
+	    return new Promise(function(resolve, reject) {
+		console.log("invoking showLoading with:", msg);
+		$rootScope.$broadcast('loading',{msg: msg, title: title});
+		$rootScope.$on('loaded', function() {
+		    console.log("service got loaded");
+		    resolve();
+		});
+	    });
+	};
+
+	service.endLoading = function() {
+	    console.log("service invoking endLoading");
+	    $rootScope.$broadcast('loaded');
+	};
+
+    }]);

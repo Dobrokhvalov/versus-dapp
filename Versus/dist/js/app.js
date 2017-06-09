@@ -412,9 +412,7 @@ versusApp.run(function($rootScope){
 
 
 angular.module('VersusApp')   
-    .controller('ListCtrl', ['VersusService',  '$scope', '$window', function(VersusService , $scope , $window) {
-
-	
+    .controller('ListCtrl', ['VersusService',  '$scope', '$state','$timeout','AlertSrvc', function(VersusService , $scope , $state, $timeout, AlertSrvc) {
 	
 	var ctrl = this;
 	ctrl.canConfirm = false;
@@ -422,14 +420,22 @@ angular.module('VersusApp')
 	ctrl.feed = [];
 	ctrl.fee = 0.01;
 	ctrl.ratedCount = 0;
+
+
+	AlertSrvc.showLoading('Loading...', 'Loading feed... Please wait').then(function() {
+	    console.log("feed loaded", ctrl.feed);
+	    $scope.$digest();		
+	});
+
 	
 	var fetchFeed = function() {
+	    
 	    ctrl.feed = [];
 	    ctrl.canConfirm = false;
 	    ctrl.feedMode = true;
 	    ctrl.ratedCount = 0;
-	    
-	    
+	    var ratedPairs = JSON.parse(localStorage.getItem("pairs")) || [];
+		
 	    VersusService.getVersuses()
 	    	.then(function(result) {
 	    	    console.log(result);
@@ -437,31 +443,39 @@ angular.module('VersusApp')
 	    	    var toId = result[1].c[0];
 	    	    var lst = [];
 	    	    for (var i=fromId, j=0; i<toId && j<100; i++, j++ ) {
-	    		lst.push(i);
+			if (!_.contains(ratedPairs, i)) {			
+	    		    lst.push(i);
+			} else {
+			    j -=1;
+			}
 	    	    }
 	    	    console.log("fromId: ", fromId);
 	    	    console.log("toId: ", toId);
 	    	    console.log("lst: ", lst);
 	    	    return lst;
 	    	}).then(function(vIds) {
-	    	    _.map(vIds, function(vId) {
-			
-	    		VersusService.getVersus(vId).then(function(d) {
+
+		    
+	    	    var vPromises = _.map(vIds, function(vId) {
+			return 	VersusService.getVersus(vId);
+		    });
+		    Promise.all(vPromises).then(function(versuses) {
+			console.log("all promises resolved: ", versuses);
+			_.map(versuses, function(d) {
 	    		    console.log(d);
 	    		    var versus = VersusService.fromContractToVersusObj(d);
 	    		    console.log(versus);
 			    if (versus.submitter !== VersusService.userAddress 
-				 && versus.pollMaxNumber > (versus.imageRatingA + versus.imageRatingB)
+				&& versus.pollMaxNumber > (versus.imageRatingA + versus.imageRatingB)
 			       ) {
 	    			ctrl.feed.push(versus);
-	    			$scope.$digest();
 			    }
 	    		});
+			AlertSrvc.endLoading();
 	    	    });
-	    	});	
+	    	});	    
 	};
 
-	VersusService.onWeb3Load(fetchFeed);
 	
 	ctrl.tap = function(versus, side) {
 	    if (!versus.selected) {
@@ -483,44 +497,81 @@ angular.module('VersusApp')
 
 
 	ctrl.submitPolls = function() {
-
-	    ctrl.canConfirm = false;
-	    ctrl.feedMode = true;
-	    ctrl.feed = [];
 	    
 	    var versusIds = [];
 	    var chosenA = [];
 	    var selectedFeeds = _.filter(ctrl.feed, function(versus) { return versus.selected;});
 	    _.map(selectedFeeds, function(feed) {
-		versusIds.push(feed.pairId);
-		chosenA.push(feed.selectedA);
+	    	versusIds.push(feed.pairId);
+	    	chosenA.push(feed.selectedA);
 	    });
+	    
+	    
+	    ctrl.canConfirm = false;
+	    ctrl.feedMode = true;
+	    ctrl.feed = [];
 
-
-	    console.log("submitting polls: ", versusIds, chosenA);
+	    
+	    console.log("ctrl.submitting polls: ", versusIds, chosenA);
 	    
 	    VersusService.submitPolls(versusIds, chosenA).then(function(data) {
-				
-		console.log("polls submitted");
-		console.log(data);
 		
-		alert("Hooray! Payout claimed, check your balance.");
-		$window.location.reload();
-	    }).catch(function() {
-		$window.location.reload();
+	    	console.log("polls submitted");
+	    	console.log(data);
+
+	    	AlertSrvc.alert("Success", "Hooray! Payout claimed, check your balance in several minutes. Note that transaction can take some time. Please wait and refresh page later.").then(function() {
+	    	    $state.reload();
+		});
+	    }).catch(function(error) {
+		AlertSrvc.alert("Error", "Oops! something went wrong. Here is the error: " + error).then(function() {
+	    	    $state.reload();
+		});
 	    });
 	};
+	
+	
+	// initing page
+	$timeout(function() {
+	    	VersusService.onWeb3Load(fetchFeed);
+	}, 500);
+	
+	
+    }]).controller('NavController', ['$state', function($state) {
+	navCtrl = this;
+	navCtrl.refreshPage = function() {
+	    $state.reload();
+	};
+	
+
+   }]).controller('ProfileCtrl', ['VersusService', '$rootScope', '$scope', function(VersusService, $rootScope, $scope) {
+	var ctrl = this;
+	ctrl.address = 'dd';
+	ctrl.log = 'log inited';
+       
+       
+	$rootScope.$on('gotProfileAddress', function() {
+	    var msg = "got address in profile Ctrl <br>" + VersusService.userAddress;
+	    console.log(msg);
+	    ctrl.log += msg;
+
+	    ctrl.address = VersusService.userAddress;
+	});
+	$rootScope.$on('gotProfileBalance', function() {
+	    var msg = "got balance in profile Ctrl <br>" + VersusService.userBalance;
+	    console.log(msg);
+	    ctrl.log += msg;
+
+	    ctrl.balance = VersusService.userBalance;
+	    $scope.$digest();
+	});
 
 	
-    }]).controller('ProfileCtrl', function() {
-    	var ctrl = this;
-	
-    }).controller('NewVersusCtrl', ['$state','VersusService',  function ($state, VersusService) {
+   }]).controller('NewVersusCtrl', ['$state','VersusService', 'AlertSrvc', function ($state, VersusService, AlertSrvc) {
     	var ctrl = this;
 	ctrl.feePerPerson = 0.01;
 	ctrl.peopleNum = 10;
-
-	
+       
+       
 	ctrl.onpeopleNumChange = function(val) {
 	    if (val < 10) {
 		ctrl.peopleNum = 10;
@@ -536,14 +587,15 @@ angular.module('VersusApp')
 		pollMaxNumber: ctrl.peopleNum
 	    };
 	    console.log("submitting versus: ", versus);
-
+	    
 	    versus.cost = versus.pollMaxNumber * ctrl.feePerPerson;
 	    
 	    VersusService.addVersus(versus)
 		.then(function(data) {
 		    console.log(data);
-		    alert("Versus added");
-		    $state.go('myversuses');
+		    AlertSrvc.alert("Success", "Versus added! It can take several minutes for new versus to appear in My Versuses Feed").then(function() {
+			$state.go('myversuses');
+		    });
 		});
 	};
 
@@ -579,10 +631,289 @@ angular.module('VersusApp')
 
 	VersusService.onWeb3Load(fetchFeed);
 
+    }]).controller('AppController', ['$rootScope', '$scope', function($rootScope, $scope) {
+	var appCtrl = this;
+	appCtrl.showAlert = false;
+	appCtrl.msg = '';
+	appCtrl.title = '';
+	appCtrl.showButton = false;
+
+	
+	$rootScope.$on('alert', function(event, args) {
+	    console.log("got msg in alert: ", args.msg);
+	    appCtrl.msg = args.msg;
+	    appCtrl.title = args.title;
+	    appCtrl.showAlert = true;
+	    appCtrl.showButton = true;
+	    $scope.$digest();
+	});
+
+
+	$rootScope.$on('loading', function(event, args) {
+	    console.log("got msg in loading: ", args.msg);
+	    appCtrl.msg = args.msg;
+	    appCtrl.title = args.title;
+	    appCtrl.showAlert = true;
+	    appCtrl.showButton = false;
+	    $scope.$digest();
+	});
+
+
+	
+	$rootScope.$on('loaded', function() {
+	    //console.log("got msg in alert: ", args.msg);
+	    appCtrl.msg = '';
+	    appCtrl.title = '';
+	    appCtrl.showAlert = false;
+	    appCtrl.showButton = false;
+	    
+	    $scope.$digest();
+	});
+	
+	
+	appCtrl.dismiss = function() {
+	    appCtrl.showAlert = false;
+	    appCtrl.msg = '';
+	    appCtrl.title = '';
+	    $rootScope.$broadcast('alertDismissed');
+	    $scope.$digest();
+	};
+	
+	
+	
     }]);
 
 
 	
+
+var web3;
+
+angular.module('VersusApp')   
+    .service('VersusService', ['$rootScope', '$timeout', 'VersusContract_',  function($rootScope, $timeout, VersusContract_) {
+	
+	var service = this;	
+	service.userAddress = '';
+	
+	
+	var setup = function() {
+	    
+
+	    $timeout(function() {
+
+		web3.eth.getAccounts(function(err, result) {
+		    if (!err && result !== undefined) {
+			console.log("got address", result);
+			service.userAddress = result[0];
+			web3.eth.defaultAccount = result[0];
+			$rootScope.$broadcast("gotProfileAddress");
+			service.getBalance();
+		    }
+		});
+
+		service.getBalance = function() {
+		    web3.eth.getBalance(service.userAddress, function(err, result) {
+			if (!err && result !== undefined) {
+			    console.log("got balance", result);
+			    
+			    service.userBalance = web3.fromWei(result.toNumber().toPrecision(6), 'ether');
+
+			    $rootScope.$broadcast("gotProfileBalance", service.userBalance);
+			}
+		    });
+		};
+	    },1000);
+
+	    
+	    
+	    VersusContract_.init();
+	    
+	    service.getVersuses = VersusContract_.getVersuses;
+	    service.getVersus = VersusContract_.getVersus;
+	    service.submitPolls = VersusContract_.submitPolls;
+	    service.getUserVersuses =  VersusContract_.getUserVersuses;
+	    service.addVersus = VersusContract_.addVersus;
+	    
+	};
+
+	
+	service.onWeb3Load = function(cb) {
+	    
+	    console.log("checking  web3");
+	    if (web3 !== undefined) {
+		cb();
+		return null;
+	    };
+	    $timeout(function() {
+		service.onWeb3Load(cb);
+	    }, 500);
+	};
+
+
+	
+	service.fromContractToVersusObj = function(obj) {
+	    var obj;
+	    try {
+		obj = {
+		    pairId: obj[0].toNumber(),
+		    title:  web3.toUtf8(obj[1]),
+		    imageSrcA: web3.toUtf8(obj[2]),
+		    imageSrcB: web3.toUtf8(obj[3]),
+		    imageRatingA: obj[4].toNumber(),
+		    imageRatingB: obj[5].toNumber(),
+		    pollMaxNumber: obj[6].toNumber(),
+		    submitter: obj[7]
+		};
+	    }	catch(err) {
+		console.log("error when parsing from smart contracts: ", err);
+	    }
+	    return obj;
+	};
+	
+
+
+	service.onWeb3Load(setup);
+	
+	return service; 
+    }]).service('VersusContract_', ['AlertSrvc', function(AlertSrvc) {
+
+	// address of contract
+	var CONTRACT_ADDRESS = '0x9684744c20734d370C9232f7E47B17E8Fcc11FFE';
+	var CONTRACT_ABI = JSON.parse('[{"constant":true,"inputs":[],"name":"likeFee","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getUserVersuses","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"pairId","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"versusIds","type":"uint256[]"},{"name":"chosenA","type":"bool[]"}],"name":"submitPolls","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"title","type":"bytes32"},{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"},{"name":"pollMaxNumber","type":"uint256"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":true,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}]');
+	
+	var service = this;
+
+	service.init = function() {
+	    service.contract = web3.eth.contract(CONTRACT_ABI).at(CONTRACT_ADDRESS);
+	};
+
+	service.getVersuses = function() {
+	    return new Promise(function(resolve, reject) {
+		service.contract.getVersuses({},function(error, result){
+		    if(!error) {
+			console.log(result);
+			resolve(result);
+		    } else {
+			console.error(error);
+		    }
+		});
+		
+	    });
+	};
+
+	service.getUserVersuses = function() {
+	    return new Promise(function(resolve, reject) {
+		service.contract.getUserVersuses({},function(error, result){
+		    if(!error) {
+			console.log(result);
+			resolve(result);
+		    } else {
+			console.error(error);
+		    }
+		});
+		
+	    });
+	};
+
+	
+	service.getVersus = function(id) {
+	    return new Promise(function(resolve, reject) {
+		service.contract.getVersus(id,function(error, result){
+		    if(!error) {
+			console.log(result);
+			resolve(result);
+		    } else {
+			console.error(error);
+		    }
+		});
+		
+	    });
+	};
+
+
+	service.submitPolls = function(ids, bools) {
+	    return new Promise(function(resolve, reject) {
+		console.log(ids, bools);
+		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
+		var ratedPairs = JSON.parse(localStorage.getItem("pairs")) || [];
+		try {
+		    service.contract.submitPolls(ids, bools,function(error, result){
+			AlertSrvc.endLoading();
+			if(!error) {
+			    console.log(result);
+			    
+			    _.map(ids, function(id) {
+				ratedPairs.push(id);
+			    });
+			    
+			    localStorage.setItem("pairs", JSON.stringify(ratedPairs));
+			    
+			    
+			    resolve(result);
+			} else {
+			    reject(error);
+			}
+		    });
+		} catch(err) {
+		    reject(err);		    
+		}
+
+
+		
+	    });
+	};
+	
+
+	
+	
+	service.addVersus = function(versus )  {
+	    return new Promise(function(resolve, reject) {
+
+		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
+		    service.contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {from: web3.eth.coinbase, value:web3.toWei(versus.cost,'ether')}, function(err, result) {
+
+			AlertSrvc.endLoading();
+			if(err) reject(err);
+			console.log(result);
+			resolve(result);
+		    });
+		    
+		});
+	};
+	
+	
+	
+	return service;
+	    
+    }]).service('AlertSrvc', ['$rootScope', function($rootScope) {
+	var service = this;
+	
+	service.alert = function(title, msg) {
+	    return new Promise(function(resolve, reject) {
+		console.log("invoking alert with:", msg);
+		$rootScope.$broadcast('alert',{msg: msg, title: title});
+		$rootScope.$on('alertDismissed', function() {
+		    resolve();
+		});
+	    });
+	};
+
+	service.showLoading = function(title, msg) {
+	    return new Promise(function(resolve, reject) {
+		console.log("invoking showLoading with:", msg);
+		$rootScope.$broadcast('loading',{msg: msg, title: title});
+		$rootScope.$on('loaded', function() {
+		    console.log("service got loaded");
+		    resolve();
+		});
+	    });
+	};
+
+	service.endLoading = function() {
+	    console.log("service invoking endLoading");
+	    $rootScope.$broadcast('loaded');
+	};
+
+    }]);
 
 // 'use strict';
 
@@ -682,9 +1013,10 @@ angular.module('VersusApp')
 	
 //     }]);
 
-var VersusContract;
+var web3;
+
 angular.module('VersusApp')   
-    .service('VersusService', ['$rootScope', '$timeout', 'VersusContract_',   function($rootScope, $timeout, VersusContract_) {
+    .service('VersusService', ['$rootScope', '$timeout', 'VersusContract_',  function($rootScope, $timeout, VersusContract_) {
 	
 	var service = this;	
 	service.userAddress = '';
@@ -692,12 +1024,34 @@ angular.module('VersusApp')
 	
 	var setup = function() {
 	    
-	    web3.eth.getAccounts(function(err, result) {
-		if (!err && result !== undefined) {
-		    service.userAddress = result[0];
-		}
-	    });
 
+	    $timeout(function() {
+
+		web3.eth.getAccounts(function(err, result) {
+		    if (!err && result !== undefined) {
+			console.log("got address", result);
+			service.userAddress = result[0];
+			web3.eth.defaultAccount = result[0];
+			$rootScope.$broadcast("gotProfileAddress");
+			service.getBalance();
+		    }
+		});
+
+		service.getBalance = function() {
+		    web3.eth.getBalance(service.userAddress, function(err, result) {
+			if (!err && result !== undefined) {
+			    console.log("got balance", result);
+			    
+			    service.userBalance = web3.fromWei(result.toNumber().toPrecision(6), 'ether');
+
+			    $rootScope.$broadcast("gotProfileBalance", service.userBalance);
+			}
+		    });
+		};
+	    },1000);
+
+	    
+	    
 	    VersusContract_.init();
 	    
 	    service.getVersuses = VersusContract_.getVersuses;
@@ -747,7 +1101,7 @@ angular.module('VersusApp')
 	service.onWeb3Load(setup);
 	
 	return service; 
-    }]).service('VersusContract_', function() {
+    }]).service('VersusContract_', ['AlertSrvc', function(AlertSrvc) {
 
 	// address of contract
 	var CONTRACT_ADDRESS = '0x9684744c20734d370C9232f7E47B17E8Fcc11FFE';
@@ -805,15 +1159,32 @@ angular.module('VersusApp')
 
 	service.submitPolls = function(ids, bools) {
 	    return new Promise(function(resolve, reject) {
-		service.contract.submitPolls(ids, bools,function(error, result){
-		    if(!error) {
-			console.log(result);
-			resolve(result);
-		    } else {
-			console.error(error);
-			reject(error);
-		    }
-		});
+		console.log(ids, bools);
+		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
+		var ratedPairs = JSON.parse(localStorage.getItem("pairs")) || [];
+		try {
+		    service.contract.submitPolls(ids, bools,function(error, result){
+			AlertSrvc.endLoading();
+			if(!error) {
+			    console.log(result);
+			    
+			    _.map(ids, function(id) {
+				ratedPairs.push(id);
+			    });
+			    
+			    localStorage.setItem("pairs", JSON.stringify(ratedPairs));
+			    
+			    
+			    resolve(result);
+			} else {
+			    reject(error);
+			}
+		    });
+		} catch(err) {
+		    reject(err);		    
+		}
+
+
 		
 	    });
 	};
@@ -822,9 +1193,12 @@ angular.module('VersusApp')
 	
 	
 	service.addVersus = function(versus )  {
-		return new Promise(function(resolve, reject) {		    
+	    return new Promise(function(resolve, reject) {
+
+		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
 		    service.contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {from: web3.eth.coinbase, value:web3.toWei(versus.cost,'ether')}, function(err, result) {
-								   
+
+			AlertSrvc.endLoading();
 			if(err) reject(err);
 			console.log(result);
 			resolve(result);
@@ -833,8 +1207,37 @@ angular.module('VersusApp')
 		});
 	};
 	
-
+	
 	
 	return service;
 	    
-    });
+    }]).service('AlertSrvc', ['$rootScope', function($rootScope) {
+	var service = this;
+	
+	service.alert = function(title, msg) {
+	    return new Promise(function(resolve, reject) {
+		console.log("invoking alert with:", msg);
+		$rootScope.$broadcast('alert',{msg: msg, title: title});
+		$rootScope.$on('alertDismissed', function() {
+		    resolve();
+		});
+	    });
+	};
+
+	service.showLoading = function(title, msg) {
+	    return new Promise(function(resolve, reject) {
+		console.log("invoking showLoading with:", msg);
+		$rootScope.$broadcast('loading',{msg: msg, title: title});
+		$rootScope.$on('loaded', function() {
+		    console.log("service got loaded");
+		    resolve();
+		});
+	    });
+	};
+
+	service.endLoading = function() {
+	    console.log("service invoking endLoading");
+	    $rootScope.$broadcast('loaded');
+	};
+
+    }]);
