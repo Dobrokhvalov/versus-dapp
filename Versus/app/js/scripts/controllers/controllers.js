@@ -181,9 +181,9 @@ angular.module('VersusApp')
 	    VersusService.addVersus(versus)
 		.then(function(data) {
 		    console.log(data);
-		    AlertSrvc.alert("Success", "Versus added! It can take several minutes for new versus to appear in My Versuses Feed").then(function() {
-			$state.go('myversuses');
-		    });
+		    $state.go('myversuses');
+		}).catch(function() {
+		    $state.go('list');
 		});
 	};
 

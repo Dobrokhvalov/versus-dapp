@@ -179,15 +179,30 @@ angular.module('VersusApp')
 	
 	service.addVersus = function(versus )  {
 	    return new Promise(function(resolve, reject) {
-
-		AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
-		    service.contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {from: web3.eth.coinbase, value:web3.toWei(versus.cost,'ether')}, function(err, result) {
-
-			AlertSrvc.endLoading();
-			if(err) reject(err);
-			console.log(result);
-			resolve(result);
+		//AlertSrvc.showLoading("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.");
+		try {
+		    service.contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {value:web3.toWei(versus.cost,'ether')}, function(err, result) {
+			
+			if(err) {
+			    AlertSrvc.alert('Error', err).then(function() {
+				reject(err);
+			    });
+			} else {
+			    
+			    AlertSrvc.alert("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait. Result from blockchain: " + result ).then(function() {
+				resolve(result);
+			    });
+			}
 		    });
+		} catch(err) {
+		    AlertSrvc.alert('Error', err).then(function() {
+			reject(err);
+		    });
+		}
+
+
+		
+		
 		    
 		});
 	};
