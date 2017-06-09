@@ -1,0 +1,69 @@
+<form name="addversus" role="form" ng-submit="login()" class="ng-pristine ng-valid ng-valid-email">
+<fieldset>
+    <div class="paybox-text"><div class="paybox-rules"><h1>
+ Submit new versus
+</h1>
+<h3>1. Choose a title for your versus.<br><br>2. Submit pictures by pasting their links into the "A" and "B" fields (Image upload is not supported at the moment).<br><br>3. Choose how many people you want to participate in the versus poll (post fee depends on the amount of people: 0.01 Eth/person).<br><br>4. Press "Submit" to post your versus.
+</h3></div></div>
+    <div class="form-group has-success has-feedback">
+	<label>Title</label>
+	<input type="text" ng-model="text" class="form-control" placeholder="Versus title">
+    </div>
+    
+    <div class="row">
+      <div class="col-xs-6">
+      <div class="form-group has-success has-feedback">
+	    
+	  <label>side A</label>
+	    <input type="text" ng-model="ctrl.sideAUrl" class="form-control form-no-padding" placeholder="side A image link">
+	    
+	    <img class="preview-img" ng-src="{{ctrl.sideAUrl}}"> </img>
+	</div>
+      </div>
+    <div class="col-xs-6">
+      <div class="form-group has-success has-feedback">
+	  
+	  <label>side B</label>
+	  <input type="text" ng-model="ctrl.sideBUrl" class="form-control form-no-padding" placeholder="side A image link">
+	  
+	  <img class="preview-img" ng-src="{{ctrl.sideBUrl}}"> </img>
+      </div>
+    </div>
+    </div>
+
+<div class="row">
+      <div class="col-xs-6">
+      <div class="form-group has-success has-feedback">
+	    
+	  <label>Poll participants</label>
+	    <input type="number" class="form-control" name="input" ng-model="ctrl.value"
+           min="10" required>
+	</div>
+      </div>
+      <div class="col-xs-6">
+      <div class="form-group has-success has-feedback">
+	    
+	  <label class="estimated-fee" style="">Estimated fee:<br><br></label>
+	  <div class="feecount" name="feecount">10 &Xi;</div>
+	</div>
+      </div>
+      
+      <div class="form-group has-success has-feedback">
+      
+      </div>
+</div>
+
+    <!-- <div class="form-group">
+	 <!-- <label>Remember Me</label>
+	 <ui-switch ng-model="rememberMe" class="ng-pristine ng-untouched ng-valid ng-isolate-scope switch active switch-transition-enabled ng-not-empty"><div class="switch-handle"></div></ui-switch>
+	 </div> -->
+</fieldset> 
+<hr>
+
+<button class="btn btn-primary btn-block add-submit-btn" ng-click="ctrl.submit()">
+    Submit
+</button>
+
+
+
+  </form>

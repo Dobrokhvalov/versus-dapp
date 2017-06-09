@@ -1,6 +1,11 @@
 
 
 <div ng-show="ctrl.feedMode">
+    <div class="paybox-text"><div class="paybox-rules"><h1>
+	Versus Feed
+    </h1>
+    <h3> Choose one image from a pair and earn tokens. The more pairs you submit at once, the larger refund you get. Because of transaction fees it's better to submit several pairs.  </h3>
+    </h3></div></div>
     
     
     <div class="panel panel-default ng-scope" ng-repeat="versus in ctrl.feed | orderBy: 'pairId'" >
@@ -25,7 +30,7 @@
 
     </div>
     
-    <a class="btn btn-block btn-lg btn-primary scrollable-footer claim-btn" ng-if="ctrl.canConfirm && ctrl.feedMode" ng-click="ctrl.feedMode=false;">  Claim Payout ~ {{profileCtrl.ratedCount}} </a>
+    <a class="btn btn-block btn-lg btn-primary scrollable-footer claim-btn" ng-if="ctrl.canConfirm && ctrl.feedMode" ng-click="ctrl.feedMode=false;">  Claim Payout ~ {{ctrl.ratedCount}} </a>
 </div>	    
 
 

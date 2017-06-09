@@ -1,13 +1,22 @@
-var VersusContract;
+
 angular.module('VersusApp')   
-    .controller('ListCtrl', ['VersusService', 'ProfileService', '$rootScope', '$timeout', '$scope', function(VersusService, ProfileService, $rootScope, $timeout, $scope) {
+    .controller('ListCtrl', ['VersusService',  '$scope', '$window', function(VersusService , $scope , $window) {
+
+	
+	
 	var ctrl = this;
 	ctrl.canConfirm = false;
 	ctrl.feedMode = true;
 	ctrl.feed = [];
+	ctrl.fee = 0.01;
+	ctrl.ratedCount = 0;
 	
 	var fetchFeed = function() {
-	    VersusContract.getVersuses()
+	    ctrl.feed = [];
+	    ctrl.canConfirm = false;
+	    ctrl.feedMode = true;
+	    
+	    VersusService.getVersuses()
 	    	.then(function(result) {
 	    	    console.log(result);
 	    	    var fromId = result[0].c[0];
@@ -23,7 +32,7 @@ angular.module('VersusApp')
 	    	}).then(function(vIds) {
 	    	    _.map(vIds, function(vId) {
 			
-	    		VersusContract.getVersus(vId).then(function(d) {
+	    		VersusService.getVersus(vId).then(function(d) {
 	    		    console.log(d);
 	    		    var versus = VersusService.fromContractToVersusObj(d);
 	    		    console.log(versus);
@@ -51,9 +60,8 @@ angular.module('VersusApp')
 	            versus.selectedB = "B" === side;
 		    versus.unselectedB = ! versus.selectedB;
 		    
-		    // update rated count
-		    ProfileService.updateRatedCount(versus, +1);
 		    ctrl.canConfirm = true;
+		    ctrl.ratedCount += 1;
 		}
 
 	    }
@@ -61,6 +69,11 @@ angular.module('VersusApp')
 
 
 	ctrl.submitPolls = function() {
+
+	    ctrl.canConfirm = false;
+	    ctrl.feedMode = true;
+	    ctrl.feed = [];
+	    
 	    var versusIds = [];
 	    var chosenA = [];
 	    var selectedFeeds = _.filter(ctrl.feed, function(versus) { return versus.selected;});
@@ -71,25 +84,24 @@ angular.module('VersusApp')
 
 
 	    console.log("submitting polls: ", versusIds, chosenA);
-	    VersusContract.submitPolls(versusIds, chosenA).then(function(data) {
-		alert("polls submitted");
+	    
+	    VersusService.submitPolls(versusIds, chosenA).then(function(data) {
+				
 		console.log("polls submitted");
 		console.log(data);
+		
+		alert("Hooray! Payout claimed, check your balance.");
+		$window.location.reload();
+	    }).catch(function() {
+		$window.location.reload();
 	    });
 	};
 
 	
-    }]).controller('ProfileCtrl', ['ProfileService', '$scope', '$rootScope', '$timeout',  function (ProfileService, $scope, $rootScope, $timeout) {
+    }]).controller('ProfileCtrl', function() {
     	var ctrl = this;
-    	ctrl.ratedCount = ProfileService.ratedCount;
-	$scope.$on('profileCountChange', function() {
-    	    ctrl.ratedCount = ProfileService.ratedCount;
-	    
-	});
-
 	
-	
-    }]).controller('NewVersusCtrl', ['$state','VersusService',  function ($state, VersusService) {
+    }).controller('NewVersusCtrl', ['$state','VersusService',  function ($state, VersusService) {
     	var ctrl = this;
 	ctrl.feePerPerson = 0.01;
 	ctrl.peopleNum = 10;
@@ -131,7 +143,7 @@ angular.module('VersusApp')
 
 	
 	var fetchFeed = function() {
-	    VersusContract.getUserVersuses()
+	    VersusService.getUserVersuses()
 	    	.then(function(result) {
 		    lst = _.map(result, function(r) {
 			return r.c[0];
@@ -140,7 +152,7 @@ angular.module('VersusApp')
 	    	}).then(function(vIds) {
 	    	    _.map(vIds, function(vId) {
 			
-	    		VersusContract.getVersus(vId).then(function(d) {
+	    		VersusService.getVersus(vId).then(function(d) {
 	    		    console.log(d);
 	    		    var versus = VersusService.fromContractToVersusObj(d);
 	    		    console.log(versus);
