@@ -519,7 +519,7 @@ angular.module('VersusApp')
 	    	console.log("polls submitted");
 	    	console.log(data);
 
-	    	AlertSrvc.alert("Success", "Hooray! Payout claimed, check your balance in several minutes. Note that transaction can take some time. Please wait and refresh page later.").then(function() {
+	    	AlertSrvc.alert("Success", "Hooray! Payout claimed, check your balance in several minutes. Note that transaction can take some time. Please wait and refresh page later. Result from blockchain: " + data).then(function() {
 	    	    $state.reload();
 		});
 	    }).catch(function(error) {
