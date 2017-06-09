@@ -15,6 +15,8 @@ angular.module('VersusApp')
 	    ctrl.feed = [];
 	    ctrl.canConfirm = false;
 	    ctrl.feedMode = true;
+	    ctrl.ratedCount = 0;
+	    
 	    
 	    VersusService.getVersuses()
 	    	.then(function(result) {
