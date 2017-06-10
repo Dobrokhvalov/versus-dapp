@@ -8,9 +8,16 @@
       "js/views/pages/new-versus.html": "app/js/views/pages/new-versus.html",
       "js/views/pages/my-versuses.html": "app/js/views/pages/my-versuses.html",
       "js/views/pages/about.html": "app/js/views/pages/about.html",
-      "js/views/pages/claim-payout-overlay.html": "app/js/views/pages/claim-payout-overlay.html"
+      "js/views/pages/claim-payout-overlay.html": "app/js/views/pages/claim-payout-overlay.html",
+      "js/bots/bot.js": "app/js/bots/bot.js"
   },
   "buildDir": "dist/",
   "config": "config/",
-  "plugins": {}
+    "plugins": {
+	"embark-status": {
+	    "deviceIp": "192.168.1.147",
+	    "whisperIdentity": "versus-bot",
+	    "name": "VersusBot"
+	}
+    }
 }
