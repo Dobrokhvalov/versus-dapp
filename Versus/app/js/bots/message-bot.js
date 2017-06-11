@@ -10,7 +10,7 @@ status.addListener("on-message-send", function (params, context) {
     };
 
     try {
-	result["text-message"] = "You're amazing, mastes!";
+	result["text-message"] = "Welcome to Versus-bot! Start earning tokens by rating versus pictures.\n\nTo add a new Versus switch to Webview by sending '\webview' (currently bot does not support add versus feature).\n\nSend '/loadfeed' to start.";
     } catch (e) {
 	result.err = e;
     }

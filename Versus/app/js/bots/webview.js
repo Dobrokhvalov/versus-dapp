@@ -22,9 +22,9 @@ function webview(params, context) {
 }
 
 status.command({
-    name: "webview",
-    title: "Webview",
-    description: "Opens dapp WebView",
+    name: "dapp",
+    title: "DApp",
+    description: "Opens DApp web view",
     color: "#CCCCCC",
     fullscreen: true,
     onSend: webview

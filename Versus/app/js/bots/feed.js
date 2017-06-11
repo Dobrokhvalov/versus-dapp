@@ -181,7 +181,7 @@ function FeedService() {
 		if (rightParams) {
 		    service._rated.push([pair.pairId, chosenLeftImage]);
 		    service.currentPairCounter += 1;
-		    status.sendMessage("Good choice, man! ");
+		    status.sendMessage("Good choice, man!\n\nPress '/rate' again to see the next pair.");
 		    
 		    
 		}else   {
@@ -205,8 +205,7 @@ function FeedService() {
 	color: "#CCCCCC",
 	fullscreen: true,
 	handler: function (params) {	
-	    status.sendMessage("Loading data from blockchain..." );
-	    console.log("here");
+	    status.sendMessage("Wait a bit, I'm loading data from blockchain..." );
 	    versusService.getVersuses(function(err, data) {
 		service._feed = [];
 		service._rated = [];
@@ -214,15 +213,11 @@ function FeedService() {
 		if (err) {
 		    status.sendMessage("Oh no! Error occured while getting data from blockchain..." );
 		} else {
-		    status.sendMessage("Ok, we got feed for you. You have " + data.length + " unrated pairs of images." );
+		    status.sendMessage("Ok, we got feed for you. You have " + data.length + " unrated pairs of images.\n\nPress '/rate' to see the first pair." );
 		    _.map(data, function(pair) {
 			service._feed.push(pair);
-			
-			status.sendMessage(pair.title + "(id: " + pair.pairId);
-			
 		    });
-
-		    
+    
 		}
 	    });
 	    

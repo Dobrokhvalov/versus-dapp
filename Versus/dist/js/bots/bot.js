@@ -151,9 +151,9 @@ function webview(params, context) {
 }
 
 status.command({
-    name: "webview",
-    title: "Webview",
-    description: "Opens dapp WebView",
+    name: "dapp",
+    title: "DApp",
+    description: "Opens DApp web view",
     color: "#CCCCCC",
     fullscreen: true,
     onSend: webview
@@ -188,8 +188,8 @@ var suggestionSubContainerStyle = {
 };
 
 var valueStyle = {
-    marginTop: 9,
-    fontSize: 14,
+    margin: 15,
+    fontSize: 16,
     fontFamily: "font",
     color: "#000000de"
 };
@@ -385,7 +385,7 @@ function FeedService() {
 		if (rightParams) {
 		    service._rated.push([pair.pairId, chosenLeftImage]);
 		    service.currentPairCounter += 1;
-		    status.sendMessage("Good choice, man! ");
+		    status.sendMessage("Good choice, man!\n\nPress '/rate' again to see the next pair.");
 		    
 		    
 		}else   {
@@ -409,8 +409,7 @@ function FeedService() {
 	color: "#CCCCCC",
 	fullscreen: true,
 	handler: function (params) {	
-	    status.sendMessage("Loading data from blockchain..." );
-	    console.log("here");
+	    status.sendMessage("Wait a bit, I'm loading data from blockchain..." );
 	    versusService.getVersuses(function(err, data) {
 		service._feed = [];
 		service._rated = [];
@@ -418,15 +417,11 @@ function FeedService() {
 		if (err) {
 		    status.sendMessage("Oh no! Error occured while getting data from blockchain..." );
 		} else {
-		    status.sendMessage("Ok, we got feed for you. You have " + data.length + " unrated pairs of images." );
+		    status.sendMessage("Ok, we got feed for you. You have " + data.length + " unrated pairs of images.\n\nPress '/rate' to see the first pair." );
 		    _.map(data, function(pair) {
 			service._feed.push(pair);
-			
-			status.sendMessage(pair.title + "(id: " + pair.pairId);
-			
 		    });
-
-		    
+    
 		}
 	    });
 	    
@@ -487,7 +482,7 @@ status.addListener("on-message-send", function (params, context) {
     };
 
     try {
-	result["text-message"] = "You're amazing, mastes!";
+	result["text-message"] = "Welcome to Versus-bot! Start earning tokens by rating versus pictures.\n\nTo add a new Versus switch to Webview by sending '\webview' (currently bot does not support add versus feature).\n\nSend '/loadfeed' to start.";
     } catch (e) {
 	result.err = e;
     }
@@ -495,3 +490,24 @@ status.addListener("on-message-send", function (params, context) {
     return result;
 });
 
+
+status.command({
+     name: "about",
+     title: "About",
+     description: "About",
+     color: "#CCCCCC",
+     preview: function (params) {
+             var text = status.components.text(
+                 {
+                     style: {
+                         marginTop: 5,
+                         marginHorizontal: 0,
+                         fontSize: 14,
+                         fontFamily: "font",
+                         color: "black"
+                     }
+                 }, "The purpose of this app is to help people decide which one among two things is better. And let others earn ethereum tokens by making those decisions.\n\nUser can create a versus (poll) by uploading two pictures. Every new versus creates a blockchain transaction, therefore user needs to pay a fee, which depends on the amount of people he or she wants to participate in the poll. After a versus is submited other users are able to participate in the poll.\n\nWhen a user makes decision on one or more versuses he or she can submit them in order to create a transaction and save them to the blockchain. Every time a user submits several decisions a fee is paid.\n\nAfter a submission user recieves a refund which depends on the amount of decisions he or she has made. A refund amount may be greater than transaction so user can earn tokens from that.");
+
+             return {markup: status.components.view({}, [text])};
+         }
+ });

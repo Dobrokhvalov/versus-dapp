@@ -27,8 +27,8 @@ var suggestionSubContainerStyle = {
 };
 
 var valueStyle = {
-    marginTop: 9,
-    fontSize: 14,
+    margin: 15,
+    fontSize: 16,
     fontFamily: "font",
     color: "#000000de"
 };
