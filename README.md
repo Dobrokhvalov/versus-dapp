@@ -1,4 +1,4 @@
-### Versus DApp and bot for Status-im
+###Versus DApp and bot for Status-im
 
 Submission: https://github.com/status-im/hackathon/issues/180
 
