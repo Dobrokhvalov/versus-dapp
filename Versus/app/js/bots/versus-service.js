@@ -61,16 +61,18 @@ function VersusService(web3_) {
 		
 		//console.log(versusIds);
 		var lst = [];
-		
+		var counter = 0;
 		_.map(versusIds, function(versusId) {
 		    service.getVersus(versusId, function(err, versusContractObj) {
 			var versus = service._fromContractToVersusObj(versusContractObj);
-			lst.push(versus);
+			counter += 1; 
+			if (versus.pollMaxNumber < 100000) { // don't load  buggy data from blockchain
+			    lst.push(versus);
+			}
 			// if got all versuses
-			if (lst.length === versusIds.length) {
+			if (counter === versusIds.length) {
 			    callback(null, lst);
 			}
-			//console.log(lst.length);
 		    });
 		});
 	    }

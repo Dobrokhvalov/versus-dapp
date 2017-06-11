@@ -16,7 +16,7 @@
   "config": "config/",
     "plugins": {
 	"embark-status": {
-	    "deviceIp": "192.168.0.36",
+	    "deviceIp": "192.168.0.41",
 	    "whisperIdentity": "versus-bot",
 	    "name": "VersusBot"
 	}
