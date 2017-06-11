@@ -181,7 +181,7 @@ function FeedService() {
 		if (rightParams) {
 		    service._rated.push([pair.pairId, chosenLeftImage]);
 		    service.currentPairCounter += 1;
-		    status.sendMessage("Good choice, man!\n\nPress '/rate' again to see the next pair.");
+		    status.sendMessage("Good choice, man!\n\nPress '/rate' again to see the next pair.\n\n You have rated " + service._rated.length + " so far. To claim payout for your hard work run '/claim'.");
 		    
 		    
 		}else   {

@@ -9,7 +9,7 @@
       "js/views/pages/my-versuses.html": "app/js/views/pages/my-versuses.html",
       "js/views/pages/about.html": "app/js/views/pages/about.html",
       "js/views/pages/claim-payout-overlay.html": "app/js/views/pages/claim-payout-overlay.html",
-      "js/bots/bot.js": ["app/js/bots/lib/*", "app/js/bots/versus-service.js","app/js/bots/webview.js", "app/js/bots/style.js", "app/js/bots/feed.js", "app/js/bots/message-bot.js", "app/js/bots/about.js"]
+      "js/bots/bot.js": ["app/js/bots/lib/*", "app/js/bots/versus-service.js","app/js/bots/webview.js", "app/js/bots/style.js", "app/js/bots/about.js",  "app/js/bots/feed.js", "app/js/bots/message-bot.js"]
 
   },
   "buildDir": "dist/",
