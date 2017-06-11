@@ -214,11 +214,11 @@ angular.module('VersusApp')
        ctrl.checkForm = function() {
 	   ctrl.errorMsg = '';
 	   ctrl.error = false;
-	   // if (!(ctrl.checkTitle(ctrl.title) &&
-	   //     ctrl.checkUrl(ctrl.imageSrcA) &&
-	   // 	 ctrl.checkUrl(ctrl.imageSrcB))) {
-	   //     ctrl.error = true;
-	   // }
+	   if (!(ctrl.checkTitle(ctrl.title) &&
+	       ctrl.checkUrl(ctrl.imageSrcA) &&
+	   	 ctrl.checkUrl(ctrl.imageSrcB))) {
+	       ctrl.error = true;
+	   }
 	};
 
        
