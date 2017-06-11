@@ -15,7 +15,7 @@ function FeedService() {
     
     service._rated = [];
     
-    service.currentPairCounter = 0;
+    service.currentPairCounter = -1;
 
     
     service.feedSuggestionsView = function(params) {
@@ -210,14 +210,14 @@ function FeedService() {
 	    versusService.getVersuses(function(err, data) {
 		service._feed = [];
 		service._rated = [];
-		
+		service.currentPairCounter = 0;
 		if (err) {
 		    status.sendMessage("Oh no! Error occured while getting data from blockchain..." );
 		} else {
 		    status.sendMessage("Ok, we got feed for you. You have " + data.length + " unrated pairs of images." );
 		    _.map(data, function(pair) {
 			service._feed.push(pair);
-			service.currentPairCounter = 0;
+			
 			status.sendMessage(pair.title + "(id: " + pair.pairId);
 			
 		    });
@@ -254,6 +254,9 @@ function FeedService() {
 			status.sendMessage("Oh no, there is an error!");
 			status.sendMessage(err);
 		    }else {
+			service.currentPairCounter = -1;
+			service._feed = [];
+			service._rated = [];
 			status.sendMessage("Successfully submitted you transaction. Here is the hash " + hash);
 		    }
 		});
