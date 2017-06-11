@@ -13,6 +13,8 @@
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "ng-file-upload": "^12.2.13"
+    "embark-status": "^0.2.1",
+    "ng-file-upload": "^12.2.13",
+    "watchman": "^0.1.8"
   }
 }
