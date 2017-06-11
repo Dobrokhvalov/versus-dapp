@@ -63,9 +63,9 @@ angular.module('VersusApp')
 
 	
 	service.fromContractToVersusObj = function(obj) {
-	    var obj;
+	    var res;
 	    try {
-		obj = {
+		res = {
 		    pairId: obj[0].toNumber(),
 		    title:  web3.toUtf8(obj[1]),
 		    imageSrcA: web3.toUtf8(obj[2]),
@@ -77,8 +77,9 @@ angular.module('VersusApp')
 		};
 	    }	catch(err) {
 		console.log("error when parsing from smart contracts: ", err);
+		res = {};
 	    }
-	    return obj;
+	    return res;
 	};
 	
 
@@ -91,7 +92,7 @@ angular.module('VersusApp')
 	// address of contract
 	//
 	var CONTRACT_ADDRESS = '0x9684744c20734d370C9232f7E47B17E8Fcc11FFE';  // Ropsten NET
-	//var CONTRACT_ADDRESS = '0xce0b05a42131aa22dcc02461bbd225c958165a28';   // Local
+
 	var CONTRACT_ABI = JSON.parse('[{"constant":true,"inputs":[],"name":"likeFee","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getUserVersuses","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"pairId","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"versusIds","type":"uint256[]"},{"name":"chosenA","type":"bool[]"}],"name":"submitPolls","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"title","type":"bytes32"},{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"},{"name":"pollMaxNumber","type":"uint256"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":true,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}]');
 	
 	var service = this;
@@ -181,7 +182,7 @@ angular.module('VersusApp')
 	
 	service.addVersus = function(versus )  {
 	    return new Promise(function(resolve, reject) {
-		AlertSrvc.alert("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait." + versus.pollMaxNumber).then(function() {
+		AlertSrvc.alert("Submitting transaction...", "Submitting transaction to blockchain. It can take several minutes...Please wait.").then(function() {
 		    try {
 			service.contract.addVersus.sendTransaction(versus.title, versus.imageSrcA, versus.imageSrcB, versus.pollMaxNumber, {value:web3.toWei(versus.cost,'ether'), gas: 1329176}, function(err, result) {
 			    

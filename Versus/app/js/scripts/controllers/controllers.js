@@ -55,6 +55,7 @@ angular.module('VersusApp')
 	    		    console.log(versus);
 			    if (versus.submitter !== VersusService.userAddress 
 				&& versus.pollMaxNumber > (versus.imageRatingA + versus.imageRatingB)
+				& versus.pollMaxNumber < 100000 // don't show buggy data from blockchain
 			       ) {
 	    			ctrl.feed.push(versus);
 			    }
@@ -156,9 +157,10 @@ angular.module('VersusApp')
 	
    }]).controller('NewVersusCtrl', ['$state','VersusService', 'AlertSrvc', function ($state, VersusService, AlertSrvc) {
     	var ctrl = this;
-	ctrl.feePerPerson = 0.01;
-	ctrl.peopleNum = 10;
-       
+       ctrl.feePerPerson = 0.01;
+       ctrl.peopleNum = 10;
+       ctrl.error = true;
+       ctrl.errorMsg = '';
        
 	ctrl.onpeopleNumChange = function(val) {
 	    if (val < 10) {
@@ -167,7 +169,62 @@ angular.module('VersusApp')
 	    ctrl.fee = ctrl.peopleNum * ctrl.feePerPerson;
 	};
 
-	ctrl.submit = function() {
+       ctrl.checkUrl = function(val) {
+	   if ( (val || "").length < 1 ) {
+	       return false;
+	   }
+
+	   var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+	   var regex = new RegExp(expression);
+	   
+	   
+	   if ((val || "").length > 0 && val.length > 32) {
+	       ctrl.error = true;
+	       ctrl.errorMsg = 'Link to image is too big. Only short links are supported at the moment (less than 32 chars)';
+	       return false;
+	   }
+	   console.log(val)
+	   if ((val || "").length > 0 && val.match(regex)) {
+	       console.log("match ok");
+	   } else {
+	       if (val) {
+		   ctrl.error = true;
+		   ctrl.errorMsg = 'Check your image links'
+		   return false;
+	       } 
+	   }
+	   return true;
+	   
+       };
+
+       ctrl.checkTitle = function(val) {
+
+	   if ( (val || "").length < 1 ) {
+	       return false;
+	   }
+	   
+	   if ((val || "").length > 0 && val.length > 32) {
+	       ctrl.error = true;
+	       ctrl.errorMsg = 'Title is too long. Only short titles are supported at the moment (less than 32 chars)';
+	       return false
+	   }
+	   return true;
+       }
+       
+       ctrl.checkForm = function() {
+	   ctrl.errorMsg = '';
+	   ctrl.error = false;
+	   // if (!(ctrl.checkTitle(ctrl.title) &&
+	   //     ctrl.checkUrl(ctrl.imageSrcA) &&
+	   // 	 ctrl.checkUrl(ctrl.imageSrcB))) {
+	   //     ctrl.error = true;
+	   // }
+	};
+
+       
+
+       ctrl.submit = function() {
+	   if (!ctrl.error) {
 	    var versus = {
 		title: ctrl.title,		
 		imageSrcA: ctrl.imageSrcA,
@@ -185,6 +242,7 @@ angular.module('VersusApp')
 		}).catch(function() {
 		    $state.go('list');
 		});
+	   }
 	};
 
 	ctrl.onpeopleNumChange();
@@ -194,7 +252,6 @@ angular.module('VersusApp')
     }]).controller('MyVersusCtrl', ['VersusService', '$scope', function(VersusService, $scope) {
 	var ctrl = this;
 	ctrl.feed = [];
-
 	
 	var fetchFeed = function() {
 	    VersusService.getUserVersuses()
@@ -209,9 +266,15 @@ angular.module('VersusApp')
 	    		VersusService.getVersus(vId).then(function(d) {
 	    		    console.log(d);
 	    		    var versus = VersusService.fromContractToVersusObj(d);
-	    		    console.log(versus);
-	    		    ctrl.feed.push(versus);
-	    		    $scope.$digest();
+	    		    //console.log("max num", versus.maxPollNumber);
+			    
+			    // don't show buggy data from smart contract
+			    if (versus.pollMaxNumber < 100000) {
+	    			ctrl.feed.push(versus);
+				$scope.$digest();
+
+			    };
+			    
 	    		});
 	    	    });
 	    	});	

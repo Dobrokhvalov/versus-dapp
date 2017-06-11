@@ -11,7 +11,7 @@
 	
 	<div class="form-group has-success has-feedback">
 	    <label>Title</label>
-	    <input type="text" ng-model="ctrl.title" class="form-control" placeholder="Versus title">
+	    <input type="text" ng-model="ctrl.title" class="form-control" placeholder="Versus title" ng-change="ctrl.checkForm()">
 	</div>
 	
 	<div class="row">
@@ -19,7 +19,7 @@
 		<div class="form-group has-success has-feedback">
 		    
 		    <label>side A</label>
-		    <input type="text" ng-model="ctrl.imageSrcA" class="form-control form-no-padding" placeholder="side A image link">
+		    <input type="text" ng-model="ctrl.imageSrcA" class="form-control form-no-padding" placeholder="side A image link" ng-change="ctrl.checkForm()">
 		    <img ng-src="{{ctrl.imageSrcA}}"> </img>
 		</div>
 	    </div>
@@ -27,7 +27,7 @@
 		<div class="form-group has-success has-feedback">
 		    
 		    <label>side B</label>
-		    <input type="text" ng-model="ctrl.imageSrcB" class="form-control form-no-padding" placeholder="side A image link">
+		    <input type="text" ng-model="ctrl.imageSrcB" class="form-control form-no-padding" placeholder="side A image link" ng-change="ctrl.checkForm()">
 		    <img ng-src="{{ctrl.imageSrcB}}"> </img>
 		</div>
 	    </div>
@@ -59,9 +59,11 @@
     </fieldset>
     
     <hr>
+    <div ng-show="ctrl.error" style="color: red;">
+	{{ ctrl.errorMsg}}
+    </div>
 
-
-    <button class="btn btn-primary btn-block add-submit-btn" ng-click="ctrl.submit()">
+    <button class="btn btn-primary btn-block add-submit-btn" ng-class="{disabled: ctrl.error}" ng-click="ctrl.submit()">
 	Submit
     </button>
 
