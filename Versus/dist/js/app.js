@@ -956,8 +956,8 @@ angular.module('VersusApp')
 		} catch(err) {
 		    reject(err);		    
 		}
-
-
+		
+		
 		
 	    });
 	};

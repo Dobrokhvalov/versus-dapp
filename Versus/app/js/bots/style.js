@@ -34,7 +34,7 @@ var valueStyle = {
 };
 
 
-var tileStyle = {
+var titleStyle = {
     margin: 15,
     fontSize: 24,
     fontFamily: "font",
