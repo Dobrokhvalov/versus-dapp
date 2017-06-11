@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -8,9 +7,9 @@
 
 function VersusService(web3_) {
     // address of contract
-
+    
     var service = this;
-
+    
     service.contractAddress = '0x9684744c20734d370C9232f7E47B17E8Fcc11FFE';  // Ropsten NET
     //var CONTRACT_ADDRESS = '0xce0b05a42131aa22dcc02461bbd225c958165a28';   // Local
     service.contractAbi = JSON.parse('[{"constant":true,"inputs":[],"name":"likeFee","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getUserVersuses","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"pairId","type":"uint256"}],"name":"getVersus","outputs":[{"name":"","type":"uint256"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"bytes32"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"versusIds","type":"uint256[]"},{"name":"chosenA","type":"bool[]"}],"name":"submitPolls","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"feedIds","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getVersuses","outputs":[{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"pairCounter","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"title","type":"bytes32"},{"name":"imageSrcA","type":"bytes32"},{"name":"imageSrcB","type":"bytes32"},{"name":"pollMaxNumber","type":"uint256"}],"name":"addVersus","outputs":[{"name":"","type":"uint256[]"}],"payable":true,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}]');
@@ -21,6 +20,7 @@ function VersusService(web3_) {
     
     service.init = function() {
     	service.contract = web3_.eth.contract(service.contractAbi).at(service.contractAddress);
+	//web3_.eth.defaultAccount = web3_.eth.accounts[0];
     };
 
 
@@ -51,7 +51,7 @@ function VersusService(web3_) {
 		callback(err);
 		return;
 	    } else {
-				
+		
 		//console.log("got versusIds");
 		//console.log(data);	    		
 		
@@ -96,48 +96,37 @@ function VersusService(web3_) {
 	service._getVersusesHandler(service.contract.getUserVersuses, callback);
     };
     
-
+    
+    
+    service.submitPolls = function(fromAccount, ids, bools, callback) {
+	//var ratedPairs = JSON.parse(localStorage.getItem("pairs")) || [];
+	service.contract.submitPolls(ids, bools, {from: fromAccount, gas: 1000000}, function(error, result){
+	    if(!error) {
+		
+		// _.map(ids, function(id) {
+		// 	ratedPairs.push(id);
+		// });
+		
+		//localStorage.setItem("pairs", JSON.stringify(ratedPairs));
+		
+		callback(null, result);
+		
+	    } else {
+		callback(error);
+	    }
+	});
+	
+    };
+    
+    
     service.init();
     
     return this;
 
 }
 
+var versusService = VersusService(web3);
 
-status.addListener("on-message-send", function (params, context) {
-    //console.log("sending messaged");
-    // console.log(params);
-    // console.log(context);
-    // var account = web3.eth.accounts[0];
-    // var balanceWei = web3.eth.getBalance(account);
-    // var balanceEth = web3.fromWei(balanceWei, 'ether');
-    
-    // console.log(account);
-    // console.log(balanceEth);
-    
-    var versusService = VersusService(web3);
-    //console.log("versus service inited");
-
-
-    //versusService.contract = web3.eth.contract(versusService.contractAbi).at(versusService.contractAddress);
-    // console.log("versus contract inited");
-    //console.log(versusService.contractAbi);
-    //console.log(versusService.contractAddress);
-    
-    
-    
-    versusService.getVersuses(function(error, data) {
-    	if (error) {
-    	    status.sendMessage("Oh no! There is an error:  " + error);
-    	} else {	    
-    	    //console.log("Got versusASS");
-    	    console.log(data);
-    	    status.sendMessage("Woo! Here are versuses " + data)xs;
-    	}
-    });
-    
-
-=======
 function webview(params, context) {
     var url = "http://versus.obedbk.ru";
 
@@ -206,17 +195,17 @@ var valueStyle = {
 };
 
 
-var tileStyle = {
+var titleStyle = {
     margin: 15,
     fontSize: 24,
     fontFamily: "font",
     color: "#000000de"
 };
 
-
-
-function feedSuggestions() {
-    var pair = {
+function FeedService() {
+    var service = this;
+    
+    var samplePair = {
 	pairId: 1,
 	title: "Versus (tap on image you like more)",
 	imageSrcA: "http://i.imgur.com/7qPx5QWb.jpg",
@@ -224,97 +213,282 @@ function feedSuggestions() {
     };
     
     
-    var pairComponent = 
-        //
-          status.components.view(
-              suggestionsContainerStyle,
-              [
-                  status.components.text(
-                      {style: titleStyle},
-                      pair.title 
-                  ),		  
-		  status.components.touchable(
-		      {onPress: status.components.dispatch([status.events.SET_VALUE,"image A"])},
-		      status.components.image({style: imageStyle, source: {uri: pair.imageSrcA}})),
-		   status.components.touchable(
-		      {onPress: status.components.dispatch([status.events.SET_VALUE,"image B"])},
-		       status.components.image({style: imageStyle, source: {uri: pair.imageSrcB}}))
-	      ]);
-              
+    service._feed = [
+//	samplePair
+    ];
+    
+    service._rated = [];
+    
+    service.currentPairCounter = 0;
 
     
-    // Let's wrap those two touchable buttons in a scrollView
-    var view = status.components.scrollView(
-        suggestionsContainerStyle(2),
-        [pairComponent]
-    );
+    service.feedSuggestionsView = function(params) {
+	
+	if (service.currentPairCounter > -1 && service._rated.length < service._feed.length) {
+	    var pair = service._feed[service.currentPairCounter];
+	    
+	    var pairComponent = 
+		    //
+		    status.components.view(
+			suggestionsContainerStyle,
+			[
+			    status.components.text(
+				{style: titleStyle},
+				pair.title 
+			    ),		  
+			    status.components.touchable(
+				{onPress: status.components.dispatch([ status.events.SET_COMMAND_ARGUMENT, [0, "imageA"]])},
+				status.components.image({style: imageStyle, source: {uri: pair.imageSrcA}})),
+			    status.components.touchable(
+				{onPress: status.components.dispatch([ status.events.SET_COMMAND_ARGUMENT, [0, "imageB"]])},
+				status.components.image({style: imageStyle, source: {uri: pair.imageSrcB}}))
+			]);
+            
+	} else {
+	    var msg;
+	    var title;
+	    if (service.currentPairCounter < 0 ) {
+		msg = "Please run /feedload command first to get pairs to rate";
+		title = "Feed not loaded";
+	    } else {
+		title = "Nothing to rate";		
+		msg = "Cool man,  you rated everything, now you can /claim your money";		
+	    }
+	    
+	    var pairComponent = 
+		    //
+		    status.components.view(
+			suggestionsContainerStyle,
+			[
+			    status.components.text(
+				{style: titleStyle},
+				title
+			    ),
+			    status.components.text(
+				{style: valueStyle},
+				msg
+			    ),		  			    
+			]);
+	}
+	
+	var view = status.components.scrollView(
+	    suggestionsContainerStyle(2),
+	    [pairComponent]
+	);
+	
+	
+	// Give back the whole thing inside an object.
+	return {markup: view};
 
-    // Give back the whole thing inside an object.
-    return {markup: view};    
+    }
+
+
+    service._buttonComponent = function(entry, dispatchLst) {
+	return status.components.touchable(
+	    {onPress: status.components.dispatch(dispatchLst)},
+	    status.components.view(
+		suggestionsContainerStyle,
+		[status.components.view(
+		    suggestionSubContainerStyle,
+		    [
+			status.components.text(
+			    {style: valueStyle},
+			    entry
+			)
+		    ]
+		)]
+	    )
+	);
+    };
+    
+    service.claimSuggestionsView = function(params) {
+	
+	if (service._rated.length > 0) {
+	    
+	    var title = "You have rated " + service._rated.length + " image pairs";
+	    
+	    
+	    var pairComponent  = [
+		status.components.view(
+		    suggestionsContainerStyle,
+		    [
+			status.components.text(
+			    {style: titleStyle},
+			    title 
+			),
+			service._buttonComponent("Confirm", [ status.events.SET_COMMAND_ARGUMENT, [0, "confirm"]]),
+			service._buttonComponent("Dismiss",[ status.events.SET_COMMAND_ARGUMENT, [0, "dismiss"]])
+			
+		    ])
+	    ];	 
+	} else {
+	    var msg;
+	    var title;
+		msg = "You have not rated anything yet. Please /rate something first";
+		title = "Nothing to claim";
+	    
+	    var pairComponent = [
+		    //
+		    status.components.view(
+			suggestionsContainerStyle,
+			[
+			    status.components.text(
+				{style: titleStyle},
+				title
+			    ),
+			    status.components.text(
+				{style: valueStyle},
+				msg
+			    ),		  			    
+			])
+	    ];
+	};
+	
+	var view = status.components.scrollView(
+	    suggestionsContainerStyle(2),
+	    pairComponent
+	);
+	
+	
+	// Give back the whole thing inside an object.
+	return {markup: view};
+
+    }
+
+
+    
+    
+    status.command({
+	name: "rate",
+	title: "Rate Versus",
+	description: "Rate versus and earn eth",
+	color: "#CCCCCC",
+	fullscreen: true,
+	params: [{
+	    name: "image",
+	    type: status.types.TEXT,
+	    suggestions:service.feedSuggestionsView	
+	}],
+	handler: function (params) {
+	    try {
+		var pair = service._feed[service.currentPairCounter];
+		var chosenLeftImage = -1;
+		var rightParams = false;
+		if (params.image === "imageA") {
+		    chosenLeftImage = true;
+		rightParams = true;
+		} else if (params.image === "imageB") {
+		    chosenLeftImage = false;
+		    rightParams = true;
+		}
+		
+		if (rightParams) {
+		    service._rated.push([pair.pairId, chosenLeftImage]);
+		    service.currentPairCounter += 1;
+		    status.sendMessage("Good choice, man! ");
+		    
+		    
+		}else   {
+		    status.sendMessage("Oh, sorry! I didn't get which image you have rated. Please rate again!");
+		    //status.sendMessage(params);
+		}
+		
+		
+	    } catch(error) {
+		status.sendMessage("Oh no! I don't feel good today. Something wrong happened. Here is the error: ");
+		status.sendMessage(error);
+	    }
+	}});
+    
+    
+    
+    status.command({
+	name: "loadfeed",
+	title: "Load Feed",
+	description: "Load feed",
+	color: "#CCCCCC",
+	fullscreen: true,
+	handler: function (params) {	
+	    status.sendMessage("Loading data from blockchain..." );
+	    console.log("here");
+	    versusService.getVersuses(function(err, data) {
+		service._feed = [];
+		service._rated = [];
+		
+		if (err) {
+		    status.sendMessage("Oh no! Error occured while getting data from blockchain..." );
+		} else {
+		    status.sendMessage("Ok, we got feed for you. You have " + data.length + " unrated pairs of images." );
+		    _.map(data, function(pair) {
+			service._feed.push(pair);
+			service.currentPairCounter = 0;
+			status.sendMessage(pair.title + "(id: " + pair.pairId);
+			
+		    });
+
+		    
+		}
+	    });
+	    
+	}
+	
+    });
+
+
+    status.command({
+	name: "claim",
+	title: "Claim Payout",
+	description: "Get you hard-earned money",
+	color: "#CCCCCC",
+	fullscreen: true,
+	params: [{
+	    name: "action",
+	    type: status.types.TEXT,
+	    suggestions:service.claimSuggestionsView	
+	}],	
+	handler: function (params, context) {
+	    if (params.action === "dismiss") {
+		status.sendMessage("Ok, no worries, man! Take you time.");
+	    } else {
+		status.sendMessage("Ok, submitting your polls to blockchain...");
+		var ids = service._rated.map(function(d) { return d[0] });
+		var bools = service._rated.map(function(d) { return d[1] });
+		versusService.submitPolls(context.from, ids, bools, function(err, hash) {
+		    if (err) {
+			status.sendMessage("Oh no, there is an error!");
+			status.sendMessage(err);
+		    }else {
+			status.sendMessage("Successfully submitted you transaction. Here is the hash " + hash);
+		    }
+		});
+		
+	    }
+	}
+	
+    });
+    
+
 }
->>>>>>> 5f88d9f8230f1f503d7382a19b10f0d2fa01ec75
-
-    
-    // var result = {
-    // 	err: null,
-    // 	data: null,
-    // 	messages: []
-    // };
-    
-    // try {
-    // 	result["text-message"] = "Getting vvversuses...";
-    // } catch (e) {
-    // 	result.err = e;
-    // }
-
-    
-    // return result;
-
-
-<<<<<<< HEAD
-});
-=======
-status.command({
-    name: "feed",
-    title: "Versus feed",
-    description: "Shows Versus feed",
-    color: "#CCCCCC",
-    fullscreen: true,
-    params: [{
-              name: "feed",
-              type: status.types.TEXT,
-              suggestions:feedSuggestions
-             }]
-
-});
+//
+var feedService = FeedService();
 
 var counter = 0;
 status.addListener("on-message-send", function (params, context) {
-    counter += 1;
+    
+    
+    
     var result = {
 	err: null,
 	data: null,
 	messages: []
     };
-    var ans = "You're amazing, master! "+counter;
-    
-    if (params.message === "image A") {
-	ans = "Good choice, man!";
-    } else if (params.message === "image B") {
-	ans = "Bad choice, man!";
-    } else {
 
-
-    }
-    
-	
     try {
-	result["text-message"] = ans;
+	result["text-message"] = "You're amazing, mastes!";
     } catch (e) {
 	result.err = e;
     }
-    
-    return result;
 
+    return result;
 });
->>>>>>> 5f88d9f8230f1f503d7382a19b10f0d2fa01ec75
+
