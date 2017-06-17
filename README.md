@@ -1,12 +1,12 @@
 ## Versus DApp and bot for Status-im
 
 Submission: https://github.com/status-im/hackathon/issues/180
-
+```
 {"whisper-identity": "versus-bot",
  "name":             "#180 Versus DApp and bot",
  "dapp-url":         "http://versus.obedbk.ru",
  "bot-url":          "http://versus.obedbk.ru/js/bots/bot.js"}
-
+```
 ## Description:
 The purpose of this app is to help people decide which one among two things is better. And let others earn ethereum tokens by making those decisions.
 
@@ -21,17 +21,23 @@ The DApp is accessible via bot and webview.
 ## Supported bot commands:
 
 /about - shows description
+
 /loadfeed - load versus feed to bot (executed before /rate)
+
 /rate - opens pair for rating (feed must be loaded before that command)
+
 /claim - claim reward for rated pairs (must be executed after some pairs have been rated)
+
 /dapp - opens DApp in webview
 
 ## Webview functionality: 
 in addition to all bot functionality DApp provides a feature for adding a new Versus (pair).
 # Files
 Bot files: /Versus/app/js/bots/
+
 DApp files: /Versus/app/js/scripts/
 
 ## Ropsten smart contract:
 Smart contract deployed to 0x9684744c20734d370C9232f7E47B17E8Fcc11FFE
+
 Source solidity files: /Versus/app/contracts/
